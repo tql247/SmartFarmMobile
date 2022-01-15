@@ -100,12 +100,7 @@ function MainNavigator({navigation} : any) {
       <MainStack.Screen
         name="MainScreen"
         component={MainScreen}
-        options={{
-            headerTitle: "Main",
-            headerStyle: styles.fff,
-            headerTitleAlign: "center",
-            headerShown: false,
-        }}
+        options={{ headerTitle: "Danh sách thiết bị", headerStyle: styles.container, headerTitleAlign: "center", headerBackTitleVisible: false }}
       />
       <MainStack.Screen
         name="ComicDetailScreen"
@@ -223,7 +218,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: 'white',
-        height: 0
     },
     container: {
         flex: 1,

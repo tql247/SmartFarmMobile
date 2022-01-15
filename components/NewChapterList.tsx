@@ -4,101 +4,55 @@ import {
     StyleSheet,
     View,
     Dimensions,
+    Switch,
     FlatList,
-    TouchableOpacity
+    TouchableOpacity,
 } from "react-native";
-import { ListItem, Icon } from 'react-native-elements';
-import {Text} from "./Themed";
-import {APIConfig} from "../config";
+import { ListItem, Icon } from "react-native-elements";
+import { Text } from "./Themed";
+import { APIConfig } from "../config";
 
 interface Props {
-    navigation: any
+    navigation: any;
 }
 
 let itemIndex = 0;
 
-export class NewChapterList extends Component<Props>  {
-
+export class NewChapterList extends Component<Props> {
     state = {
         items: [
             {
-                title: 'Comage',
-                newChapter: 'Chap 32: Release That Witch',
+                idx: 0,
+                title: "Comage",
+                newChapter: "Chap 32: Release That Witch",
                 lastUpdate: "Just now",
-                mangaId: ""
+                mangaId: "",
+                active: false,
             },
             {
-                title: 'Grand blue',
-                newChapter: 'Chap 12: Gakkou no Minna to Isekai no Mujintou',
+                idx: 1,
+                title: "Grand blue",
+                newChapter: "Chap 12: Gakkou no Minna to Isekai no Mujintou",
                 lastUpdate: "30 mins ago",
                 isFollowing: true,
                 tag: [
-                    "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Harem" ,"Psychological" , "Romance"
-                ]
+                    "Action",
+                    "Adventure",
+                    "Comedy",
+                    "Drama",
+                    "Fantasy",
+                    "Harem",
+                    "Psychological",
+                    "Romance",
+                ],
+                active: true,
             },
-            {
-                title: 'Soudouki tensei isekai',
-                newChapter: 'Chap 111: Soredemo Ayumu wa Yosetekuru',
-                lastUpdate: "1 hours ago",
-            },
-            {
-                title: 'Konosuba',
-                newChapter: 'Chap 45: ApretÉ El BotÓN Durante Un MillÓN new It, I Was The Strongest',
-                lastUpdate: "1 hours ago",
-            },
-            {
-                title: 'Overlord',
-                newChapter: 'Chap 90: MP, 武炼巅峰',
-                lastUpdate: "3 hours ago",
-                isFollowing: false,
-                tag: [
-                    "Action" , "Adventure" , "Fantasy" , "Historical" , "Martial arts"
-                ]
-            },
-            {
-                title: 'Goblin Slayer',
-                newChapter: 'Chap 78: うらら迷路帖 ; Urara 迷路帖',
-                lastUpdate: "5 hours ago",
-                isFollowing: false,
-                tag: [
-                    "Action" ,"Adventure", "Fantasy", "Historical" ,"Martial arts"
-                ]
-            },
-            {
-                title: 'Itensei Slime Dataken',
-                newChapter: 'Chap 66: キルボードを駆使して最強に至る',
-                lastUpdate: "1 day ago",
-                isFollowing: false,
-                tag: [
-                    "Adventure", "Fantasy", "Shounen",
-                ]
-            },
-            {
-                title: 'Re: Zero',
-                newChapter: 'Chap 12: ダイI (English); Diamond no Ace 2',
-                lastUpdate: "1 day ago",
-                isFollowing: false,
-                tag: [
-                    "Comedy" ,"School life", "Shounen", "Sports"
-                ]
-            },
-            {
-                title: 'To you, the immortal',
-                newChapter: 'Chap 40: Оперативный отряд "Daishikkaku" ; 戦隊大失格',
-                lastUpdate: "1 day ago",
-            },
-            {
-                title: 'Blue Period',
-                newChapter: 'Chap 72: ブルーピリオド',
-                mangaProviderId: "",
-                forwardScreen: "",
-                lastUpdate: "1 day ago",
-            }
-        ]
+        ],
+        active: false,
     };
 
     _mapData(data: any) {
-        const newItems = []
+        const newItems = [];
         for (let row of data) {
             const item = {
                 title: row["manga_name"],
@@ -106,30 +60,30 @@ export class NewChapterList extends Component<Props>  {
                 lastUpdate: row["updated_at"] || row["create_at"],
                 mangaProviderId: row["manga_provider_id"],
                 forwardScreen: "",
-            }
+            };
 
-            newItems.push(item)
+            newItems.push(item);
         }
-        console.log('newItems')
-        console.log(newItems)
+        console.log("newItems");
+        console.log(newItems);
 
-        this.setState({items: newItems})
+        this.setState({ items: newItems });
     }
 
     _getLatestChapter() {
-        const axios = require('axios');
+        const axios = require("axios");
 
         const config = {
-            method: 'get',
-            url: APIConfig['api']['get_chapter_latest'],
-            headers: {}
+            method: "get",
+            url: APIConfig["api"]["get_chapter_latest"],
+            headers: {},
         };
 
-        const self = this
+        const self = this;
 
         axios(config)
             .then(function (response: any) {
-                self._mapData(response.data.latestChapters)
+                self._mapData(response.data.latestChapters);
             })
             .catch(function (error: any) {
                 console.log(error);
@@ -140,32 +94,54 @@ export class NewChapterList extends Component<Props>  {
         this._getLatestChapter();
     }
 
-    renderTitle(name: string, chapter: string, time: string) {
-        itemIndex++;
+    updateMachineState(value: boolean, idx: number) {
+        console.log('a')
+        
+        const _itemIndex = this.state.items.findIndex(x => x.idx === idx);
+        const cpyItems = this.state.items;
 
+        cpyItems[_itemIndex].active = value;
+        console.log(cpyItems)
+        this.setState({items: cpyItems})
+        console.log(this.state.items)
+    }
+
+    renderTitle(idx: number, name: string, chapter: string, time: string, active: boolean) {
+        itemIndex++;
+        
         return (
-            <View style={{backgroundColor: itemIndex%2===0?"rgba(225,225,225,0.45)":"transparent", padding: 5}}>
-                <Text style={styles.title} numberOfLines={1}>
-                    {name.slice(0, 50) + (name.length>50?"...":"")}
-                </Text>
-                <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-                    <Text style={styles.chapter}>
-                        {chapter}
-                    </Text>
-                    <Text style={styles.time}>
-                        {time}
-                    </Text>
+            <View
+                style={{
+                    backgroundColor:
+                        itemIndex % 2 === 0 ? "rgba(225,225,225,0.45)" : "transparent",
+                    padding: 5,
+                }}
+            >
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <View>
+                        <Text style={styles.title} numberOfLines={1}>
+                            {name.slice(0, 50) + (name.length > 50 ? "..." : "")}
+                        </Text>
+                        <Text style={styles.chapter}>Trạng thái: Đang tắt</Text>
+                    </View>
+                    <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        thumbColor={active ? "#f5dd4b" : "#f4f3f4"}
+                        ios_backgroundColor="#3e3e3e"
+                        value={active}
+                        onValueChange={(value) => this.updateMachineState(value, idx)}
+                    />
                 </View>
             </View>
-        )
+        );
     }
 
     renderItem(item: any) {
         return (
             <View style={styles.imgContainer}>
-                {this.renderTitle(item.title, item.newChapter, item.lastUpdate)}
+                {this.renderTitle(item.idx, item.title, item.newChapter, item.lastUpdate, item.active)}
             </View>
-        )
+        );
     }
 
     render() {
@@ -174,16 +150,19 @@ export class NewChapterList extends Component<Props>  {
                 <FlatList
                     style={styles.scrollView}
                     data={this.state.items}
-                    renderItem={({item}) => (
+                    extraData={this.state}
+                    renderItem={({ item }) => (
                         <View style={styles.imgContainer}>
                             <TouchableOpacity
-                                onPress={() => (this.props.navigation.navigate(
-                                        item.forwardScreen || "ComicDetailScreen",
-                                        {
-                                            mangaProviderId: item.mangaProviderId,
-                                            mangaTitle: item.title
-                                        }
-                                    ))}
+                                // onPress={() =>
+                                //     this.props.navigation.navigate(
+                                //         item.forwardScreen || "ComicDetailScreen",
+                                //         {
+                                //             mangaProviderId: item.mangaProviderId,
+                                //             mangaTitle: item.title,
+                                //         }
+                                //     )
+                                // }
                             >
                                 {this.renderItem(item)}
                             </TouchableOpacity>
@@ -198,7 +177,7 @@ export class NewChapterList extends Component<Props>  {
 const styles = StyleSheet.create({
     flatListContainer: {
         flex: 1,
-        marginBottom: 20
+        marginBottom: 20,
     },
     title: {
         color: "#666666",
@@ -210,7 +189,7 @@ const styles = StyleSheet.create({
         color: "#767676",
         fontWeight: "400",
         flexWrap: "wrap",
-        marginRight: 3
+        marginRight: 3,
     },
     time: {
         color: "#767676",
@@ -220,8 +199,8 @@ const styles = StyleSheet.create({
     scrollView: {
         borderWidth: 0,
         borderColor: "transparent",
-        shadowColor: 'transparent',
-        flex: 1
+        shadowColor: "transparent",
+        flex: 1,
     },
     imgContainer: {
         flexGrow: 1,
@@ -239,6 +218,6 @@ const styles = StyleSheet.create({
         color: "#feb47b",
         overflow: "hidden",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
     },
 });

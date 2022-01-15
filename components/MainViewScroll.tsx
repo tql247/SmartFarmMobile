@@ -10,11 +10,6 @@ export class MainViewScroll extends Component {
 
         return (
             <View style={[{flex: 1, height: "100%"}]}>
-                <View style={styles.carousel}>
-                    <TopCarousel/>
-                </View>
-                <View  style={[styles.centroid, {marginVertical: 10}]}>
-                </View>
             </View>
         );
     }

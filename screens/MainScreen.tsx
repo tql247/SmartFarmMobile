@@ -36,45 +36,8 @@ export default function MainScreen({ navigation, props } : any) {
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
               renderItem={({item}) => (
                   <View style={styles.container}>
-                      <MainViewScroll/>
-                      <View style={styles.threadContainer}>
-                          <Icon style={{margin: 5}} size={35} color={"#ff7e5f"} name={"stats-chart"} type={"ionicon"} />
-                          <TopTrend {...props} navigation={navigation} subject={"Top Trending"} />
-                      </View>
-                      <View style={styles.threadContainer}>
-                          <ListTag />
-                      </View>
                       <View style={[styles.threadContainer, {margin: 0}]}>
-                          <TouchableOpacity
-                              onPress={() => (navigation.navigate('ListItemScreen', { subject: 'New Chapter'}))}
-                          >
-                              <Text style={[styles.threadTitle, {margin: 5}]}>Latest</Text>
-                          </TouchableOpacity>
                           <NewChapterList {...props} navigation={navigation} />
-                      </View>
-                      <View style={styles.threadContainer}>
-                          <TouchableOpacity
-                              onPress={() => (navigation.navigate('ListItemScreen', { subject: 'New Comic'}))}
-                          >
-                            <Text style={styles.threadTitle}>Newest</Text>
-                          </TouchableOpacity>
-                          <GotMovieList {...props} navigation={navigation} />
-                      </View>
-                      <View style={styles.threadContainer}>
-                          <TouchableOpacity
-                              onPress={() => (navigation.navigate('ListItemScreen', { subject: 'Complete'}))}
-                          >
-                            <Text style={styles.threadTitle}>Completed</Text>
-                          </TouchableOpacity>
-                          <GotMovieList {...props} navigation={navigation} />
-                      </View>
-                      <View style={styles.threadContainer}>
-                          <TouchableOpacity
-                              onPress={() => (navigation.navigate('ListItemScreen', { subject: 'Got Movie/Anime'}))}
-                          >
-                            <Text style={styles.threadTitle}>Got Movie/Anime</Text>
-                          </TouchableOpacity>
-                          <GotMovieList {...props} navigation={navigation} />
                       </View>
                   </View>
               ) }
