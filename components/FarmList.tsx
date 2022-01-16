@@ -17,65 +17,58 @@ interface Props {
 }
 
 let itemIndex = 0;
+const axios = require("axios");
 
-export class NewChapterList extends Component<Props> {
+export class FarmList extends Component<Props> {
     state = {
         items: [
             {
-                idx: 0,
-                title: "Comage",
-                newChapter: "Chap 32: Release That Witch",
-                lastUpdate: "Just now",
-                mangaId: "",
-                active: false,
+                _id: '0',
+                name: "Comage",
+                located: {
+                    address: "Tp. Hồ Chí Minh",
+                    name: "sf4",
+                    owner: "61baad92ac7a62194cb3983e",
+                    _id: "61d8a1f56af3d133b457bc14"
+                },
+                owner: {
+                    email: "email222311321",
+                    full_name: "full_name2",
+                    _id: "61baad92ac7a62194cb3983e"
+                },
+                value: '-'
             },
             {
-                idx: 1,
-                title: "Grand blue",
-                newChapter: "Chap 12: Gakkou no Minna to Isekai no Mujintou",
-                lastUpdate: "30 mins ago",
-                isFollowing: true,
-                tag: [
-                    "Action",
-                    "Adventure",
-                    "Comedy",
-                    "Drama",
-                    "Fantasy",
-                    "Harem",
-                    "Psychological",
-                    "Romance",
-                ],
-                active: true,
+                _id: '1',
+                name: "Grand blue",
+                located: {
+                    address: "Tp. Hồ Chí Minh",
+                    name: "sf4",
+                    owner: "61baad92ac7a62194cb3983e",
+                    _id: "61d8a1f56af3d133b457bc14"
+                },
+                owner: {
+                    email: "email222311321",
+                    full_name: "full_name2",
+                    _id: "61baad92ac7a62194cb3983e"
+                },
+                value: '-'
             },
         ],
         active: false,
     };
 
     _mapData(data: any) {
-        const newItems = [];
-        for (let row of data) {
-            const item = {
-                title: row["manga_name"],
-                newChapter: row["chapter_name"],
-                lastUpdate: row["updated_at"] || row["create_at"],
-                mangaProviderId: row["manga_provider_id"],
-                forwardScreen: "",
-            };
-
-            newItems.push(item);
-        }
-        console.log("newItems");
-        console.log(newItems);
-
-        this.setState({ items: newItems });
+        this.setState({ items: data });
+        this.updateFarmValue()
     }
 
-    _getLatestChapter() {
+    _getFarms() {
         const axios = require("axios");
 
         const config = {
             method: "get",
-            url: APIConfig["api"]["get_machine"].replace('{owner_id}', '61baad92ac7a62194cb3983e'),
+            url: APIConfig["api"]["get_sensor"].replace('{owner_id}', '61baad92ac7a62194cb3983e'),
             headers: {},
         };
 
@@ -83,54 +76,64 @@ export class NewChapterList extends Component<Props> {
 
         axios(config)
             .then(function (response: any) {
-                self._mapData(response.data.latestChapters);
+                console.log(response);
+                console.log(response.data);
+                self._mapData(response.data);
             })
             .catch(function (error: any) {
                 console.log(error);
             });
     }
 
+    async _getFarmValue(sensor_id: string) {
+        const config = {
+            method: "get",
+            url: APIConfig["api"]["get_sensor_value"].replace('{sensor_id}', 'Humidity'),
+            headers: {},
+        };
+
+        const value = await axios(config)
+
+        return value.data
+    }
+
+    async updateFarmValue() {
+        const newData = [] 
+        for (let sensor of this.state.items) {
+            sensor.value = await this._getFarmValue(sensor._id)
+            newData.push(sensor)
+        }
+
+        this.setState({ items: newData });
+    }
+
     componentDidMount() {
-        // this._getLatestChapter();
+        this._getFarms();
     }
 
-    updateMachineState(value: boolean, idx: number) {
-        console.log('a')
-        
-        const _itemIndex = this.state.items.findIndex(x => x.idx === idx);
-        const cpyItems = this.state.items;
-
-        cpyItems[_itemIndex].active = value;
-        console.log(cpyItems)
-        this.setState({items: cpyItems})
-        console.log(this.state.items)
-    }
-
-    renderTitle(idx: number, name: string, chapter: string, time: string, active: boolean) {
+    renderRowData(idx: string, name: string, located: {name: string, address: string}, value: string) {
         itemIndex++;
         
         return (
             <View
                 style={{
-                    backgroundColor:
-                        itemIndex % 2 === 0 ? "rgba(225,225,225,0.45)" : "transparent",
-                    padding: 5,
+                    backgroundColor: itemIndex % 2 !== 0 ? "rgba(225,225,225,0.45)" : "transparent",
+                    padding: 6,
+                    height: "60px"
                 }}
             >
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between"}}>
                     <View>
                         <Text style={styles.title} numberOfLines={1}>
-                            {name.slice(0, 50) + (name.length > 50 ? "..." : "")}
+                            {name}
                         </Text>
-                        <Text style={styles.chapter}>Trạng thái: Đang tắt</Text>
+                        <Text>
+                            {located.name} - {located.address}
+                        </Text>
                     </View>
-                    <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={active ? "#f5dd4b" : "#f4f3f4"}
-                        ios_backgroundColor="#3e3e3e"
-                        value={active}
-                        onValueChange={(value) => this.updateMachineState(value, idx)}
-                    />
+                    <View>
+                    <Text> {value}  %</Text>
+                    </View>
                 </View>
             </View>
         );
@@ -139,7 +142,7 @@ export class NewChapterList extends Component<Props> {
     renderItem(item: any) {
         return (
             <View style={styles.imgContainer}>
-                {this.renderTitle(item.idx, item.title, item.newChapter, item.lastUpdate, item.active)}
+                {this.renderRowData(item.idx, item.name, item.located, item.value)}
             </View>
         );
     }
@@ -181,7 +184,7 @@ const styles = StyleSheet.create({
     },
     title: {
         color: "#666666",
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: "500",
         flexWrap: "wrap",
     },

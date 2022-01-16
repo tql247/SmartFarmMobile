@@ -13,10 +13,9 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ProfileScreen from '../screens/ProfileScreen';
 import MainScreen from '../screens/MainScreen';
-import FollowScreen from '../screens/FollowScreen';
-import SearchScreen from '../screens/SearchScreen';
-import { BottomTabParamList, NotificationParamList, ProfileParamList, MainParamList, FollowParamList, SearchParamList } from '../types';
-import SearchBarHeader from '../components/SearchBarHeader';
+import FarmScreen from '../screens/FarmScreen';
+import SensorScreen from '../screens/SensorScreen';
+import { BottomTabParamList, NotificationParamList, ProfileParamList, MainParamList, FarmParamList, SensorParamList } from '../types';
 import {StyleSheet} from "react-native";
 import GradientHeaderTitle from "../components/GradientHeaderTitle";
 import NotificationScreen from "../screens/NotificationScreen";
@@ -45,15 +44,15 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="Search"
-        component={SearchNavigator}
+        name="Sensor"
+        component={SensorNavigator}
         options={{
           tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "ios-search" : "ios-search-outline"} color={color} />,
         }}
       />
       <BottomTab.Screen
-        name="Follow"
-        component={FollowNavigator}
+        name="Farm"
+        component={FarmNavigator}
         options={{
           tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "ios-heart" : "ios-heart-outline"} color={color} />,
         }}
@@ -120,35 +119,35 @@ function MainNavigator({navigation} : any) {
 }
 
 
-const SearchStack = createStackNavigator<SearchParamList>();
+const SensorStack = createStackNavigator<SensorParamList>();
 
-function SearchNavigator() {
+function SensorNavigator() {
   return (
-    <SearchStack.Navigator
+    <SensorStack.Navigator
         screenOptions={{
             headerTintColor: 'white',
             headerBackground: () =>
                 <GradientHeaderTitle />,
         }}
     >
-      <SearchStack.Screen
-        name="SearchScreen"
-        component={SearchScreen}
-        options={{
-            headerTitle: () => <SearchBarHeader />,
-            headerStyle: styles.container
+      <SensorStack.Screen
+        name="SensorScreen"
+        component={SensorScreen}
+        options={{  headerTitle: "Listing", headerStyle: styles.container, headerTitleAlign: "center",
+            // headerLeft: () => (<Ionicons size={30} name={"ios-arrow-back"} onPress={ () => { navigation.goBack()}} />),
+            headerBackTitleVisible: false,
         }}
       />
-    </SearchStack.Navigator>
+    </SensorStack.Navigator>
   );
 }
 
 
-const FollowStack = createStackNavigator<FollowParamList>();
+const FarmStack = createStackNavigator<FarmParamList>();
 
-function FollowNavigator() {
+function FarmNavigator() {
   return (
-    <FollowStack.Navigator
+    <FarmStack.Navigator
         screenOptions={{
             headerTintColor: 'white',
             headerBackground: () =>
@@ -156,12 +155,12 @@ function FollowNavigator() {
             headerStyle: { backgroundColor: '#feb47b' },
         }}
     >
-      <FollowStack.Screen
-        name="FollowScreen"
-        component={FollowScreen}
-        options={{ headerTitle: "Following", headerStyle: styles.container, headerTitleAlign: "center" }}
+      <FarmStack.Screen
+        name="FarmScreen"
+        component={FarmScreen}
+        options={{ headerTitle: "Farming", headerStyle: styles.container, headerTitleAlign: "center" }}
       />
-    </FollowStack.Navigator>
+    </FarmStack.Navigator>
   );
 }
 

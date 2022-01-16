@@ -19,8 +19,8 @@ export type TabStackParamList = {
 
 export type BottomTabParamList = {
   Main: undefined;
-  Search: undefined;
-  Follow: undefined;
+  Sensor: undefined;
+  Farm: undefined;
   Notification: undefined;
   Profile: undefined;
 };
@@ -32,12 +32,12 @@ export type MainParamList = {
   ReadingScreen: undefined;
 };
 
-export type SearchParamList = {
-  SearchScreen: undefined;
+export type SensorParamList = {
+  SensorScreen: undefined;
 };
 
-export type FollowParamList = {
-  FollowScreen: undefined;
+export type FarmParamList = {
+  FarmScreen: undefined;
 };
 
 export type ProfileParamList = {
