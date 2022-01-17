@@ -3,7 +3,7 @@ import {Dimensions, FlatList, RefreshControl, StyleSheet, TouchableOpacity} from
 
 import { Text, View } from '../components/Themed';
 import {MainViewScroll} from "../components/MainViewScroll";
-import {NewChapterList} from "../components/NewChapterList";
+import {MachineList} from "../components/MachineList";
 import {NewComic} from "../components/NewComic";
 import {GotMovieList} from "../components/GotMovieList";
 import {TopTrend} from "../components/TopTrend";
@@ -37,7 +37,7 @@ export default function MainScreen({ navigation, props } : any) {
               renderItem={({item}) => (
                   <View style={styles.container}>
                       <View style={[styles.threadContainer, {margin: 0}]}>
-                          <NewChapterList {...props} navigation={navigation} />
+                          <MachineList {...props} navigation={navigation} />
                       </View>
                   </View>
               ) }

@@ -7,7 +7,8 @@ export const APIConfig = {
         'get_farms': api +  `/farm/get_by_owner/{owner_id}`,
         'get_machine': api +  `/machine/get_by_owner/{owner_id}`,
         'get_sensor': api +  `/sensor/get_by_owner/{owner_id}`,
-        'get_sensor_value': api +  `/sensor/get_value/{sensor_id}`
+        'get_sensor_value': api +  `/sensor/get_value/{sensor_id}`,
+        'get_machine_value': api +  `/machine/get_value/{machine_id}`
         // 
         
     }
