@@ -24,6 +24,13 @@ const axios = require("axios");
 export class SensorList extends Component<Props> {
     state = {
         selectedLanguage: 'All',
+        farms: [
+            {
+                _id: '',
+                name: '',
+                address: ''
+            }
+        ],
         items: [
             {
                 _id: "0",
@@ -86,6 +93,32 @@ export class SensorList extends Component<Props> {
             });
     }
 
+
+    _getFarms() {
+        const axios = require("axios");
+
+        const config = {
+            method: "get",
+            url: APIConfig["api"]["get_farms"].replace(
+                "{owner_id}",
+                "61baad92ac7a62194cb3983e"
+            ),
+            headers: {},
+        };
+
+        const self = this;
+
+        axios(config)
+            .then(function (response: any) {
+                console.log(response);
+                console.log(response.data);
+                self.setState({ farms: response.data });
+            })
+            .catch(function (error: any) {
+                console.log(error);
+            });
+    }
+
     async _getSensorValue(sensor_id: string) {
         const config = {
             method: "get",
@@ -116,8 +149,14 @@ export class SensorList extends Component<Props> {
 
         const newData = [];
         for (let sensor of this.state.items) {
-            console.log(sensor.located._id)
-            sensor.display = false;
+            if (itemValue === "all") {
+                sensor.display = true;
+            }
+            else if (sensor.located._id !== itemValue) {
+                sensor.display = false;
+            } else {
+                sensor.display = true;
+            }
             newData.push(sensor);
         }
 
@@ -125,6 +164,7 @@ export class SensorList extends Component<Props> {
     }
 
     componentDidMount() {
+        this._getFarms()
         this._getSensors();
     }
 
@@ -182,8 +222,12 @@ export class SensorList extends Component<Props> {
                     }
                     style={styles.picker}
                 >
-                    <Picker.Item label="Java" value="java" />
-                    <Picker.Item label="JavaScript" value="js" />
+                    <Picker.Item label="All" value="all" />
+                    {this.state.farms.map((farm) => {
+                        return (
+                            <Picker.Item key={farm._id} label={farm.name + ' - ' + farm.address} value={farm._id} />
+                        )
+                    })}
                 </Picker>
                 <FlatList
                     style={styles.scrollView}
