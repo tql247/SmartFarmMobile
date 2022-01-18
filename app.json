@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Comage",
-    "slug": "comage",
+    "name": "SmartFarm",
+    "slug": "smartfarm",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/favicon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/logo.png",
+      "image": "./assets/images/favicon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,14 +23,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo.png",
+        "foregroundImage": "./assets/images/favicon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./assets/images/logo.png"
+      "favicon": "./assets/images/favicon.png"
     },
     "description": "The Tab Navigation project template includes several example screens.",
-    "githubUrl": "https://github.com/tql247/Comage"
+    "githubUrl": "https://github.com/tql247/SmartFarm"
   }
 }

@@ -212,17 +212,9 @@ function ProfileNavigator() {
 
 const styles = StyleSheet.create({
     fff: {
-        flex: 1,
-        alignSelf: "center",
-        alignItems: "center",
-        justifyContent: "center",
         backgroundColor: 'white',
     },
     container: {
-        flex: 1,
-        alignSelf: "center",
-        alignItems: "center",
-        justifyContent: "center",
         backgroundColor: 'transparent',
     }
 });

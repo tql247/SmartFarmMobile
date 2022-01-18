@@ -12,7 +12,7 @@ import { Picker } from "@react-native-picker/picker";
 import { ListItem, Icon } from "react-native-elements";
 import { Text } from "./Themed";
 import { APIConfig } from "../config";
-import { alignItems, display } from "styled-system";
+import { alignItems, display, height } from "styled-system";
 
 interface Props {
     navigation: any;
@@ -34,17 +34,17 @@ export class MachineList extends Component<Props> {
         items: [
             {
                 _id: "0",
-                name: "Comage",
+                name: "-",
                 located: {
-                    address: "Tp. Hồ Chí Minh",
-                    name: "sf4",
-                    owner: "61baad92ac7a62194cb3983e",
-                    _id: "61d8a1f56af3d133b457bc14",
+                    address: "-",
+                    name: "-",
+                    owner: "-",
+                    _id: "-",
                 },
                 owner: {
-                    email: "email222311321",
-                    full_name: "full_name2",
-                    _id: "61baad92ac7a62194cb3983e",
+                    email: "-",
+                    full_name: "-",
+                    _id: "-",
                 },
                 value: "-",
                 display: true,
@@ -67,7 +67,6 @@ export class MachineList extends Component<Props> {
         this.updateMachineValue();
     }
 
-
     async updateMachineValue() {
         const newData = [];
 
@@ -75,9 +74,6 @@ export class MachineList extends Component<Props> {
             machine.active = await this._getMachineValue(machine._id);
             newData.push(machine);
         }
-
-        console.log('newData')
-        console.log(newData)
 
         this.setState({ items: newData });
     }
@@ -117,8 +113,6 @@ export class MachineList extends Component<Props> {
 
         const value = await axios(config);
 
-        console.log(value.data);
-
         return value.data;
     }
 
@@ -138,8 +132,6 @@ export class MachineList extends Component<Props> {
 
         axios(config)
             .then(function (response: any) {
-                console.log(response);
-                console.log(response.data);
                 self.setState({ farms: response.data });
             })
             .catch(function (error: any) {
@@ -153,7 +145,31 @@ export class MachineList extends Component<Props> {
 
         cpyItems[_itemIndex].active = value;
         this.setState({ items: cpyItems });
-        console.log(value);
+        console.log(value, _id);
+
+        var data = JSON.stringify({
+            "_id": _id,
+            "state": value
+        });
+
+        var config = {
+            method: 'post',
+            url: APIConfig["api"]["set_machine_state"],
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+
+        axios(config)
+            .then(function (response: { data: any; }) {
+                console.log('JSON.stringify(response.data)');
+                console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error: any) {
+                console.log(error);
+            });
+
     }
 
     filterValueByFarm(itemValue: string) {
@@ -161,8 +177,6 @@ export class MachineList extends Component<Props> {
 
         const newData = [];
         for (let machine of this.state.items) {
-            console.log(machine.located._id)
-
             if (itemValue === "all") {
                 machine.display = true;
             }
@@ -173,9 +187,6 @@ export class MachineList extends Component<Props> {
             }
             newData.push(machine);
         }
-
-        console.log(itemValue);
-        console.log(newData);
 
         this.setState({ items: newData });
     }
@@ -189,7 +200,7 @@ export class MachineList extends Component<Props> {
         idx: string,
         name: string,
         located: { name: string; address: string },
-        active: boolean, 
+        active: boolean,
         display: boolean
     ) {
         if (!display) return;
@@ -204,7 +215,7 @@ export class MachineList extends Component<Props> {
                 }}
             >
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <View>
+                    <View style={{flex: 1, flexDirection: "column", justifyContent: "space-between"}}>
                         <Text style={styles.title} numberOfLines={1}>
                             {name}
                         </Text>
@@ -244,6 +255,7 @@ export class MachineList extends Component<Props> {
                         this.filterValueByFarm(itemValue)
                     }
                     style={styles.picker}
+                    itemStyle={{height: 44}}
                 >
                     <Picker.Item label="All" value="all" />
                     {this.state.farms.map((farm) => {
@@ -256,6 +268,7 @@ export class MachineList extends Component<Props> {
                     style={styles.scrollView}
                     data={this.state.items}
                     extraData={this.state}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <View style={styles.imgContainer}>
                             <TouchableOpacity
@@ -281,8 +294,6 @@ export class MachineList extends Component<Props> {
 
 const styles = StyleSheet.create({
     picker: {
-        padding: 10,
-        borderWidth: 1,
         borderColor: "#666",
     },
     flatListContainer: {
@@ -291,8 +302,8 @@ const styles = StyleSheet.create({
     },
     title: {
         color: "#666666",
-        fontSize: 16,
-        fontWeight: "500",
+        fontSize: 23,
+        fontWeight: "400",
         flexWrap: "wrap",
     },
     chapter: {
@@ -328,6 +339,5 @@ const styles = StyleSheet.create({
         color: "#feb47b",
         overflow: "hidden",
         alignItems: "center",
-        justifyContent: "center",
     },
 });
