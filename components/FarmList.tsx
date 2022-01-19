@@ -76,8 +76,6 @@ export class FarmList extends Component<Props> {
 
         axios(config)
             .then(function (response: any) {
-                console.log(response);
-                console.log(response.data);
                 self._mapData(response.data);
             })
             .catch(function (error: any) {
@@ -119,7 +117,7 @@ export class FarmList extends Component<Props> {
                 style={{
                     backgroundColor: itemIndex % 2 !== 0 ? "rgba(225,225,225,0.45)" : "transparent",
                     padding: 6,
-                    height: "60px"
+                    height: 60
                 }}
             >
                 <View style={{ flexDirection: "row", justifyContent: "space-between"}}>
@@ -154,6 +152,7 @@ export class FarmList extends Component<Props> {
                     style={styles.scrollView}
                     data={this.state.items}
                     extraData={this.state}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <View style={styles.imgContainer}>
                             <TouchableOpacity

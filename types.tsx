@@ -20,7 +20,7 @@ export type TabStackParamList = {
 export type BottomTabParamList = {
   Main: undefined;
   Sensor: undefined;
-  Farm: undefined;
+  Rule: undefined;
   Notification: undefined;
   Profile: undefined;
 };
@@ -36,8 +36,8 @@ export type SensorParamList = {
   SensorScreen: undefined;
 };
 
-export type FarmParamList = {
-  FarmScreen: undefined;
+export type RuleParamList = {
+  RuleScreen: undefined;
 };
 
 export type ProfileParamList = {

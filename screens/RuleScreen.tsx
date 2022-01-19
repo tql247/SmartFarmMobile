@@ -2,8 +2,7 @@ import * as React from 'react';
 import {Dimensions, FlatList, RefreshControl, StyleSheet, TouchableOpacity} from 'react-native';
 
 import { Text, View } from '../components/Themed';
-import {MainViewScroll} from "../components/MainViewScroll";
-import {SensorList} from "../components/SensorList";
+import {RuleList} from "../components/RuleList";
 import {NewComic} from "../components/NewComic";
 import {GotMovieList} from "../components/GotMovieList";
 import {TopTrend} from "../components/TopTrend";
@@ -18,7 +17,7 @@ const wait = (timeout: any) => {
     });
 };
 
-export default function SensorScreen({ navigation, props } : any) {
+export default function RuleScreen({ navigation, props } : any) {
     const [refreshing, setRefreshing] = React.useState(false);
 
 
@@ -38,7 +37,7 @@ export default function SensorScreen({ navigation, props } : any) {
               renderItem={({item}) => (
                   <View style={styles.container}>
                       <View style={[styles.threadContainer, {margin: 0}]}>
-                          <SensorList {...props} navigation={navigation} />
+                          <RuleList {...props} navigation={navigation} />
                       </View>
                   </View>
               ) }

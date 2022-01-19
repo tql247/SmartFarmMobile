@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { ListItem, Icon } from "react-native-elements";
-
 import { Text } from "./Themed";
 import { APIConfig } from "../config";
+import { alignItems, display, height } from "styled-system";
 
 interface Props {
     navigation: any;
@@ -21,9 +21,9 @@ interface Props {
 let itemIndex = 0;
 const axios = require("axios");
 
-export class SensorList extends Component<Props> {
+export class RuleList extends Component<Props> {
     state = {
-        selectedLanguage: 'All',
+        selectedLanguage: 'all',
         farms: [
             {
                 _id: '',
@@ -33,21 +33,22 @@ export class SensorList extends Component<Props> {
         ],
         items: [
             {
-                _id: "0",
-                name: "Comage",
+                _id: "x",
+                name: "-",
                 located: {
-                    address: "Tp. Hồ Chí Minh",
-                    name: "sf4",
-                    owner: "61baad92ac7a62194cb3983e",
-                    _id: "61d8a1f56af3d133b457bc14",
+                    address: "-",
+                    name: "-",
+                    owner: "-",
+                    _id: "-",
                 },
                 owner: {
-                    email: "email222311321",
-                    full_name: "full_name2",
-                    _id: "61baad92ac7a62194cb3983e",
+                    email: "-",
+                    full_name: "-",
+                    _id: "-",
                 },
                 value: "-",
                 display: true,
+                active: false,
             },
         ],
         active: false,
@@ -55,25 +56,34 @@ export class SensorList extends Component<Props> {
 
     _mapData(data: any) {
         const newData = [];
-        for (let sensor of data) {
-            sensor.value = '-';
-            sensor.display = true;
-            newData.push(sensor);
+
+        for (let machine of data) {
+            machine.active = false;
+            machine.display = true;
+            newData.push(machine);
         }
 
         this.setState({ items: newData });
-        this.updateSensorValue();
-        setInterval(() => {
-            this.updateSensorValue()
-        }, 1000)
+        this.updateRuleValue();
     }
 
-    _getSensors() {
+    async updateRuleValue() {
+        const newData = [];
+
+        for (let machine of this.state.items) {
+            machine.active = await this._getRuleValue(machine._id);
+            newData.push(machine);
+        }
+
+        this.setState({ items: newData });
+    }
+
+    _getRules() {
         const axios = require("axios");
 
         const config = {
             method: "get",
-            url: APIConfig["api"]["get_sensor"].replace(
+            url: APIConfig["api"]["get_machine"].replace(
                 "{owner_id}",
                 "61baad92ac7a62194cb3983e"
             ),
@@ -84,13 +94,28 @@ export class SensorList extends Component<Props> {
 
         axios(config)
             .then(function (response: any) {
-                self._mapData(response.data);
+                console.log(response.data)
+                // self._mapData(response.data);
             })
             .catch(function (error: any) {
                 console.log(error);
             });
     }
 
+    async _getRuleValue(machine_id: string) {
+        const config = {
+            method: "get",
+            url: APIConfig["api"]["get_machine_value"].replace(
+                "{machine_id}",
+                machine_id
+            ),
+            headers: {},
+        };
+
+        const value = await axios(config);
+
+        return value.data;
+    }
 
     _getFarms() {
         const axios = require("axios");
@@ -115,45 +140,53 @@ export class SensorList extends Component<Props> {
             });
     }
 
-    async _getSensorValue(sensor_id: string) {
-        const config = {
-            method: "get",
-            url: APIConfig["api"]["get_sensor_value"].replace(
-                "{sensor_id}",
-                sensor_id
-            ),
-            headers: {},
+    updateRuleState(value: boolean, _id: string) {
+        const _itemIndex = this.state.items.findIndex((x) => x._id === _id);
+        const cpyItems = this.state.items;
+
+        cpyItems[_itemIndex].active = value;
+        this.setState({ items: cpyItems });
+        console.log(value, _id);
+
+        var data = JSON.stringify({
+            "_id": _id,
+            "state": value
+        });
+
+        var config = {
+            method: 'post',
+            url: APIConfig["api"]["set_machine_state"],
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
         };
 
-        const value = await axios(config);
+        axios(config)
+            .then(function (response: { data: any; }) {
+                console.log('JSON.stringify(response.data)');
+                console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error: any) {
+                console.log(error);
+            });
 
-        return value.data;
-    }
-
-    async updateSensorValue() {
-        const newData = [];
-        for (let sensor of this.state.items) {
-            sensor.value = await this._getSensorValue(sensor._id);
-            newData.push(sensor);
-        }
-
-        this.setState({ items: newData });
     }
 
     filterValueByFarm(itemValue: string) {
         this.setState({ selectedLanguage: itemValue })
 
         const newData = [];
-        for (let sensor of this.state.items) {
+        for (let machine of this.state.items) {
             if (itemValue === "all") {
-                sensor.display = true;
+                machine.display = true;
             }
-            else if (sensor.located._id !== itemValue) {
-                sensor.display = false;
+            else if (machine.located._id !== itemValue) {
+                machine.display = false;
             } else {
-                sensor.display = true;
+                machine.display = true;
             }
-            newData.push(sensor);
+            newData.push(machine);
         }
 
         this.setState({ items: newData });
@@ -161,14 +194,14 @@ export class SensorList extends Component<Props> {
 
     componentDidMount() {
         this._getFarms()
-        this._getSensors();
+        this._getRules();
     }
 
-    renderRowData(
+    renderTitle(
         idx: string,
         name: string,
         located: { name: string; address: string },
-        value: string,
+        active: boolean,
         display: boolean
     ) {
         if (!display) return;
@@ -178,13 +211,12 @@ export class SensorList extends Component<Props> {
             <View
                 style={{
                     backgroundColor:
-                        itemIndex % 2 !== 0 ? "rgba(225,225,225,0.45)" : "transparent",
-                    padding: 6,
-                    height: 60,
+                        itemIndex % 2 === 0 ? "rgba(225,225,225,0.45)" : "transparent",
+                    padding: 5,
                 }}
             >
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <View>
+                    <View style={{flex: 1, flexDirection: "column", justifyContent: "space-between"}}>
                         <Text style={styles.title} numberOfLines={1}>
                             {name}
                         </Text>
@@ -192,8 +224,15 @@ export class SensorList extends Component<Props> {
                             {located.name} - {located.address}
                         </Text>
                     </View>
-                    <View>
-                        <Text> {value} %</Text>
+                    <View style={{ alignItems: "flex-end" }}>
+                        <Switch
+                            trackColor={{ false: "#767577", true: "#81b0ff" }}
+                            thumbColor={active ? "#f5dd4b" : "#f4f3f4"}
+                            ios_backgroundColor="#3e3e3e"
+                            value={active}
+                            onValueChange={(value) => this.updateRuleState(value, idx)}
+                        />
+                        <Text style={styles.chapter}>Trạng thái: -</Text>
                     </View>
                 </View>
             </View>
@@ -203,7 +242,7 @@ export class SensorList extends Component<Props> {
     renderItem(item: any) {
         return (
             <View style={styles.imgContainer}>
-                {this.renderRowData(item.idx, item.name, item.located, item.value, item.display)}
+                {this.renderTitle(item._id, item.name, item.located, item.active, item.display)}
             </View>
         );
     }
@@ -217,7 +256,7 @@ export class SensorList extends Component<Props> {
                         this.filterValueByFarm(itemValue)
                     }
                     style={styles.picker}
-                    itemStyle={{ height: 44 }}
+                    itemStyle={{height: 44}}
                 >
                     <Picker.Item label="All" value="all" />
                     {this.state.farms.map((farm) => {
@@ -301,6 +340,5 @@ const styles = StyleSheet.create({
         color: "#feb47b",
         overflow: "hidden",
         alignItems: "center",
-        justifyContent: "center",
     },
 });

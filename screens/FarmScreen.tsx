@@ -34,6 +34,7 @@ export default function FarmScreen({ navigation, props } : any) {
               data={[1]}
               numColumns={1}
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+              keyExtractor={(item, index) => index.toString()}
               renderItem={({item}) => (
                   <View style={styles.container}>
                       <View style={[styles.threadContainer, {margin: 0}]}>

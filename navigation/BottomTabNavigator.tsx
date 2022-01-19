@@ -13,9 +13,9 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ProfileScreen from '../screens/ProfileScreen';
 import MainScreen from '../screens/MainScreen';
-import FarmScreen from '../screens/FarmScreen';
+import RuleScreen from '../screens/RuleScreen';
 import SensorScreen from '../screens/SensorScreen';
-import { BottomTabParamList, NotificationParamList, ProfileParamList, MainParamList, FarmParamList, SensorParamList } from '../types';
+import { BottomTabParamList, NotificationParamList, ProfileParamList, MainParamList, RuleParamList, SensorParamList } from '../types';
 import {StyleSheet} from "react-native";
 import GradientHeaderTitle from "../components/GradientHeaderTitle";
 import NotificationScreen from "../screens/NotificationScreen";
@@ -51,8 +51,8 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="Farm"
-        component={FarmNavigator}
+        name="Rule"
+        component={RuleNavigator}
         options={{
           tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "ios-heart" : "ios-heart-outline"} color={color} />,
         }}
@@ -143,11 +143,11 @@ function SensorNavigator() {
 }
 
 
-const FarmStack = createStackNavigator<FarmParamList>();
+const RuleStack = createStackNavigator<RuleParamList>();
 
-function FarmNavigator() {
+function RuleNavigator() {
   return (
-    <FarmStack.Navigator
+    <RuleStack.Navigator
         screenOptions={{
             headerTintColor: 'white',
             headerBackground: () =>
@@ -155,12 +155,12 @@ function FarmNavigator() {
             headerStyle: { backgroundColor: '#feb47b' },
         }}
     >
-      <FarmStack.Screen
-        name="FarmScreen"
-        component={FarmScreen}
-        options={{ headerTitle: "Farming", headerStyle: styles.container, headerTitleAlign: "center" }}
+      <RuleStack.Screen
+        name="RuleScreen"
+        component={RuleScreen}
+        options={{ headerTitle: "Ruleing", headerStyle: styles.container, headerTitleAlign: "center" }}
       />
-    </FarmStack.Navigator>
+    </RuleStack.Navigator>
   );
 }
 
