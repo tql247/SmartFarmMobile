@@ -24,7 +24,9 @@ export default function RuleScreen({ navigation, props } : any) {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
-        wait(2000).then(() => setRefreshing(false));
+        wait(2000).then(() => {
+            setRefreshing(false)
+        });
     }, []);
 
     return (
@@ -37,7 +39,7 @@ export default function RuleScreen({ navigation, props } : any) {
               renderItem={({item}) => (
                   <View style={styles.container}>
                       <View style={[styles.threadContainer, {margin: 0}]}>
-                          <RuleList {...props} navigation={navigation} />
+                          <RuleList {...props} navigation={navigation} key={refreshing} refreshing={refreshing} />
                       </View>
                   </View>
               ) }

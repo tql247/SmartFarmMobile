@@ -16,6 +16,7 @@ import { alignItems, display, height } from "styled-system";
 
 interface Props {
     navigation: any;
+    refreshing: any;
 }
 
 let itemIndex = 0;
@@ -24,6 +25,7 @@ const axios = require("axios");
 export class RuleList extends Component<Props> {
     state = {
         selectedLanguage: 'all',
+        refreshing: this.props.refreshing,
         farms: [
             {
                 _id: '',
@@ -33,20 +35,37 @@ export class RuleList extends Component<Props> {
         ],
         items: [
             {
-                _id: "x",
-                name: "-",
+                duration: 10,
+                state: false,
+                _id: "61e7712ae5e2904ecc3534ab",
+                name: 'dieukienchaytest1',
                 located: {
-                    address: "-",
-                    name: "-",
-                    owner: "-",
-                    _id: "-",
+                    _id: "61d8a1f56af3d133b457bc14",
+                    name: 'sf4',
+                    address: 'Tp. Hồ Chí Minh',
+                    owner: "61baad92ac7a62194cb3983e"
                 },
                 owner: {
-                    email: "-",
-                    full_name: "-",
-                    _id: "-",
+                    _id: "61baad92ac7a62194cb3983e",
+                    email: 'username@email.com',
+                    full_name: 'Người Dùng'
                 },
-                value: "-",
+                sensor: {
+                    _id: "61dad0b6358dcd2a40913e2b",
+                    name: 'st1',
+                    owner: "61baad92ac7a62194cb3983e"
+                },
+                threshold: 50,
+                start_at: '10:00',
+                end_at: '18:00',
+                expr: '>=',
+                target_value: 'ON',
+                machine: {
+                    _id: "61e51ec211066b3468da3bd0",
+                    name: 'mca1',
+                    owner: "61baad92ac7a62194cb3983e"
+                },
+                value: '-',
                 display: true,
                 active: false,
             },
@@ -83,7 +102,7 @@ export class RuleList extends Component<Props> {
 
         const config = {
             method: "get",
-            url: APIConfig["api"]["get_machine"].replace(
+            url: APIConfig["api"]["get_rule"].replace(
                 "{owner_id}",
                 "61baad92ac7a62194cb3983e"
             ),
@@ -94,8 +113,7 @@ export class RuleList extends Component<Props> {
 
         axios(config)
             .then(function (response: any) {
-                console.log(response.data)
-                // self._mapData(response.data);
+                self._mapData(response.data);
             })
             .catch(function (error: any) {
                 console.log(error);
@@ -193,18 +211,15 @@ export class RuleList extends Component<Props> {
     }
 
     componentDidMount() {
+        if (this.state.refreshing) return
         this._getFarms()
         this._getRules();
     }
 
     renderTitle(
-        idx: string,
-        name: string,
-        located: { name: string; address: string },
-        active: boolean,
-        display: boolean
+        item: any
     ) {
-        if (!display) return;
+        if (!item.display) return;
         itemIndex++;
 
         return (
@@ -216,24 +231,25 @@ export class RuleList extends Component<Props> {
                 }}
             >
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <View style={{flex: 1, flexDirection: "column", justifyContent: "space-between"}}>
+                    <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-between" }}>
                         <Text style={styles.title} numberOfLines={1}>
-                            {name}
+                            {item.name}
                         </Text>
                         <Text>
-                            {located.name} - {located.address}
+                            {item.located.name} - {item.located.address}
                         </Text>
+                        <Text>Nếu {item.sensor.name} {item.expr} {item.threshold} thì {item.machine.name} {item.target_value} ({item.start_at} - {item.end_at})</Text>
                     </View>
                     <View style={{ alignItems: "flex-end" }}>
                         <Switch
                             trackColor={{ false: "#767577", true: "#81b0ff" }}
-                            thumbColor={active ? "#f5dd4b" : "#f4f3f4"}
+                            thumbColor={item.active ? "#f5dd4b" : "#f4f3f4"}
                             ios_backgroundColor="#3e3e3e"
-                            value={active}
-                            onValueChange={(value) => this.updateRuleState(value, idx)}
+                            value={item.active}
+                            onValueChange={(value) => this.updateRuleState(value, item.idx)}
                         />
-                        <Text style={styles.chapter}>Trạng thái: -</Text>
                     </View>
+
                 </View>
             </View>
         );
@@ -242,7 +258,7 @@ export class RuleList extends Component<Props> {
     renderItem(item: any) {
         return (
             <View style={styles.imgContainer}>
-                {this.renderTitle(item._id, item.name, item.located, item.active, item.display)}
+                {this.renderTitle(item)}
             </View>
         );
     }
@@ -256,7 +272,7 @@ export class RuleList extends Component<Props> {
                         this.filterValueByFarm(itemValue)
                     }
                     style={styles.picker}
-                    itemStyle={{height: 44}}
+                    itemStyle={{ height: 44 }}
                 >
                     <Picker.Item label="All" value="all" />
                     {this.state.farms.map((farm) => {

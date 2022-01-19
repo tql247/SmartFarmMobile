@@ -38,7 +38,7 @@ export default function MainScreen({ navigation, props } : any) {
               renderItem={({item}) => (
                   <View style={styles.container}>
                       <View style={[styles.threadContainer, {margin: 0}]}>
-                          <MachineList {...props} navigation={navigation} />
+                          <MachineList {...props} navigation={navigation} key={refreshing} refreshing={refreshing} />
                       </View>
                   </View>
               ) }

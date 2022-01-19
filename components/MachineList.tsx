@@ -16,6 +16,7 @@ import { alignItems, display, height } from "styled-system";
 
 interface Props {
     navigation: any;
+    refreshing: any;
 }
 
 let itemIndex = 0;
@@ -23,6 +24,7 @@ const axios = require("axios");
 
 export class MachineList extends Component<Props> {
     state = {
+        refreshing: this.props.refreshing,
         selectedLanguage: 'all',
         farms: [
             {
@@ -192,6 +194,8 @@ export class MachineList extends Component<Props> {
     }
 
     componentDidMount() {
+        if (this.state.refreshing) return
+        
         this._getFarms()
         this._getMachines();
     }

@@ -35,6 +35,7 @@ export class SensorList extends Component<Props> {
             {
                 _id: "0",
                 name: "Comage",
+                unit: "",
                 located: {
                     address: "Tp. Hồ Chí Minh",
                     name: "sf4",
@@ -169,6 +170,7 @@ export class SensorList extends Component<Props> {
         name: string,
         located: { name: string; address: string },
         value: string,
+        unit: string,
         display: boolean
     ) {
         if (!display) return;
@@ -193,7 +195,7 @@ export class SensorList extends Component<Props> {
                         </Text>
                     </View>
                     <View>
-                        <Text> {value} %</Text>
+                        <Text style={{fontSize: 35}}> {value}{unit}</Text>
                     </View>
                 </View>
             </View>
@@ -203,7 +205,7 @@ export class SensorList extends Component<Props> {
     renderItem(item: any) {
         return (
             <View style={styles.imgContainer}>
-                {this.renderRowData(item.idx, item.name, item.located, item.value, item.display)}
+                {this.renderRowData(item.idx, item.name, item.located, item.value, item.unit, item.display)}
             </View>
         );
     }

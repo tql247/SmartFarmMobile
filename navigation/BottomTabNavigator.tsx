@@ -109,7 +109,7 @@ function MainNavigator({navigation} : any) {
       <MainStack.Screen
         name="ListItemScreen"
         component={ListItemScreen}
-        options={{  headerTitle: "Listing", headerStyle: styles.container, headerTitleAlign: "center",
+        options={{  headerTitle: "Danh sách cảm biến", headerStyle: styles.container, headerTitleAlign: "center",
             // headerLeft: () => (<Ionicons size={30} name={"ios-arrow-back"} onPress={ () => { navigation.goBack()}} />),
             headerBackTitleVisible: false,
         }}
@@ -133,7 +133,7 @@ function SensorNavigator() {
       <SensorStack.Screen
         name="SensorScreen"
         component={SensorScreen}
-        options={{  headerTitle: "Listing", headerStyle: styles.container, headerTitleAlign: "center",
+        options={{  headerTitle: "Danh sách cảm biến", headerStyle: styles.container, headerTitleAlign: "center",
             // headerLeft: () => (<Ionicons size={30} name={"ios-arrow-back"} onPress={ () => { navigation.goBack()}} />),
             headerBackTitleVisible: false,
         }}
@@ -158,7 +158,7 @@ function RuleNavigator() {
       <RuleStack.Screen
         name="RuleScreen"
         component={RuleScreen}
-        options={{ headerTitle: "Ruleing", headerStyle: styles.container, headerTitleAlign: "center" }}
+        options={{ headerTitle: "Danh sách điều kiện chạy", headerStyle: styles.container, headerTitleAlign: "center" }}
       />
     </RuleStack.Navigator>
   );
