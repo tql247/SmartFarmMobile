@@ -16,6 +16,7 @@ import { APIConfig } from "../config";
 
 interface Props {
     navigation: any;
+    refreshing: any;
 }
 
 let itemIndex = 0;
@@ -24,6 +25,7 @@ const axios = require("axios");
 export class SensorList extends Component<Props> {
     state = {
         selectedLanguage: 'All',
+        refreshing: this.props.refreshing,
         farms: [
             {
                 _id: '',
@@ -161,6 +163,8 @@ export class SensorList extends Component<Props> {
     }
 
     componentDidMount() {
+        // if (this.state.refreshing) return
+
         this._getFarms()
         this._getSensors();
     }

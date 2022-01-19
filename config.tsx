@@ -10,7 +10,8 @@ export const APIConfig = {
         'get_rule': api +  `/rule/get_by_owner/{owner_id}`,
         'get_sensor_value': api +  `/sensor/get_value/{sensor_id}`,
         'get_machine_value': api +  `/machine/get_value/{machine_id}`,
-        'set_machine_state': api +  `/machine/set_state`
+        'set_machine_state': api +  `/machine/set_state`,
+        'set_rule_state': api +  `/rule/set_state`
         // 
         
     }

@@ -12,10 +12,10 @@ import * as React from 'react';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ProfileScreen from '../screens/ProfileScreen';
-import MainScreen from '../screens/MainScreen';
+import MachineScreen from '../screens/MachineScreen';
 import RuleScreen from '../screens/RuleScreen';
 import SensorScreen from '../screens/SensorScreen';
-import { BottomTabParamList, NotificationParamList, ProfileParamList, MainParamList, RuleParamList, SensorParamList } from '../types';
+import { BottomTabParamList, NotificationParamList, ProfileParamList, MachineParamList, RuleParamList, SensorParamList } from '../types';
 import {StyleSheet} from "react-native";
 import GradientHeaderTitle from "../components/GradientHeaderTitle";
 import NotificationScreen from "../screens/NotificationScreen";
@@ -33,28 +33,28 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Main"
+      initialRouteName="Machine"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
     >
       <BottomTab.Screen
-        name="Main"
-        component={MainNavigator}
+        name="Machine"
+        component={MachineNavigator}
         options={{
-          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "ios-flame" : "ios-flame-outline"} color={color} />,
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "ios-water" : "ios-water-outline"} color={color} />,
         }}
       />
       <BottomTab.Screen
         name="Sensor"
         component={SensorNavigator}
         options={{
-          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "ios-search" : "ios-search-outline"} color={color} />,
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "ios-radio" : "ios-radio-outline"} color={color} />,
         }}
       />
       <BottomTab.Screen
         name="Rule"
         component={RuleNavigator}
         options={{
-          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "ios-heart" : "ios-heart-outline"} color={color} />,
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "ios-time" : "ios-time-outline"} color={color} />,
         }}
       />
       <BottomTab.Screen
@@ -83,11 +83,11 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const MainStack = createStackNavigator<MainParamList>();
+const MachineStack = createStackNavigator<MachineParamList>();
 
-function MainNavigator({navigation} : any) {
+function MachineNavigator({navigation} : any) {
   return (
-    <MainStack.Navigator
+    <MachineStack.Navigator
         screenOptions={{
             headerTintColor: 'white',
             headerBackground: () =>
@@ -96,17 +96,17 @@ function MainNavigator({navigation} : any) {
 
         }}
     >
-      <MainStack.Screen
-        name="MainScreen"
-        component={MainScreen}
+      <MachineStack.Screen
+        name="MachineScreen"
+        component={MachineScreen}
         options={{ headerTitle: "Danh sách thiết bị", headerStyle: styles.container, headerTitleAlign: "center", headerBackTitleVisible: false }}
       />
-      <MainStack.Screen
+      <MachineStack.Screen
         name="ComicDetailScreen"
         component={ComicDetailScreen}
         options={{ headerTitle: "Detail", headerStyle: styles.container, headerTitleAlign: "center", headerBackTitleVisible: false }}
       />
-      <MainStack.Screen
+      <MachineStack.Screen
         name="ListItemScreen"
         component={ListItemScreen}
         options={{  headerTitle: "Danh sách cảm biến", headerStyle: styles.container, headerTitleAlign: "center",
@@ -114,7 +114,7 @@ function MainNavigator({navigation} : any) {
             headerBackTitleVisible: false,
         }}
       />
-    </MainStack.Navigator>
+    </MachineStack.Navigator>
   );
 }
 

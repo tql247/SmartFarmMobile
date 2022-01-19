@@ -67,30 +67,15 @@ export class RuleList extends Component<Props> {
                 },
                 value: '-',
                 display: true,
-                active: false,
             },
         ],
-        active: false,
     };
 
     _mapData(data: any) {
         const newData = [];
 
         for (let machine of data) {
-            machine.active = false;
             machine.display = true;
-            newData.push(machine);
-        }
-
-        this.setState({ items: newData });
-        this.updateRuleValue();
-    }
-
-    async updateRuleValue() {
-        const newData = [];
-
-        for (let machine of this.state.items) {
-            machine.active = await this._getRuleValue(machine._id);
             newData.push(machine);
         }
 
@@ -120,21 +105,6 @@ export class RuleList extends Component<Props> {
             });
     }
 
-    async _getRuleValue(machine_id: string) {
-        const config = {
-            method: "get",
-            url: APIConfig["api"]["get_machine_value"].replace(
-                "{machine_id}",
-                machine_id
-            ),
-            headers: {},
-        };
-
-        const value = await axios(config);
-
-        return value.data;
-    }
-
     _getFarms() {
         const axios = require("axios");
 
@@ -161,10 +131,9 @@ export class RuleList extends Component<Props> {
     updateRuleState(value: boolean, _id: string) {
         const _itemIndex = this.state.items.findIndex((x) => x._id === _id);
         const cpyItems = this.state.items;
-
-        cpyItems[_itemIndex].active = value;
+        console.log(_itemIndex);
+        cpyItems[_itemIndex].state = value;
         this.setState({ items: cpyItems });
-        console.log(value, _id);
 
         var data = JSON.stringify({
             "_id": _id,
@@ -173,7 +142,7 @@ export class RuleList extends Component<Props> {
 
         var config = {
             method: 'post',
-            url: APIConfig["api"]["set_machine_state"],
+            url: APIConfig["api"]["set_rule_state"],
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -211,7 +180,7 @@ export class RuleList extends Component<Props> {
     }
 
     componentDidMount() {
-        if (this.state.refreshing) return
+        // if (this.state.refreshing) return
         this._getFarms()
         this._getRules();
     }
@@ -238,15 +207,16 @@ export class RuleList extends Component<Props> {
                         <Text>
                             {item.located.name} - {item.located.address}
                         </Text>
-                        <Text>Nếu {item.sensor.name} {item.expr} {item.threshold} thì {item.machine.name} {item.target_value} ({item.start_at} - {item.end_at})</Text>
+                        <Text>Nếu {item.sensor.name} {item.expr} {item.threshold} thì {item.machine.name} {item.target_value}</Text>
+                        <Text>{item.start_at} - {item.end_at}</Text>
                     </View>
                     <View style={{ alignItems: "flex-end" }}>
                         <Switch
                             trackColor={{ false: "#767577", true: "#81b0ff" }}
-                            thumbColor={item.active ? "#f5dd4b" : "#f4f3f4"}
+                            thumbColor={item.state ? "#f5dd4b" : "#f4f3f4"}
                             ios_backgroundColor="#3e3e3e"
-                            value={item.active}
-                            onValueChange={(value) => this.updateRuleState(value, item.idx)}
+                            value={item.state}
+                            onValueChange={(value) => this.updateRuleState(value, item._id)}
                         />
                     </View>
 

@@ -18,15 +18,15 @@ export type TabStackParamList = {
 };
 
 export type BottomTabParamList = {
-  Main: undefined;
+  Machine: undefined;
   Sensor: undefined;
   Rule: undefined;
   Notification: undefined;
   Profile: undefined;
 };
 
-export type MainParamList = {
-  MainScreen: undefined;
+export type MachineParamList = {
+  MachineScreen: undefined;
   ComicDetailScreen: undefined;
   ListItemScreen: undefined;
   ReadingScreen: undefined;

@@ -194,8 +194,8 @@ export class MachineList extends Component<Props> {
     }
 
     componentDidMount() {
-        if (this.state.refreshing) return
-        
+        // if (this.state.refreshing) return
+
         this._getFarms()
         this._getMachines();
     }
