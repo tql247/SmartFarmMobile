@@ -4,6 +4,7 @@ import { Dimensions, FlatList, RefreshControl, StyleSheet, TouchableOpacity, Mod
 
 import { View, Text } from '../components/Themed';
 import { RuleList } from "../components/RuleList";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { height } = Dimensions.get("window");
 
@@ -17,6 +18,8 @@ export default function RuleScreen({ navigation, props }: any) {
     const [refreshing, setRefreshing] = React.useState(false);
     const [modalVisible, setModalVisible] = React.useState(false);
     let [editing, setEditing] = React.useState(false);
+    const insets = useSafeAreaInsets();
+
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -43,6 +46,7 @@ export default function RuleScreen({ navigation, props }: any) {
             <Ionicons size={30} name={"ios-create-outline"} color="#fff" onPress={onEditing} />
             // <Button onPress={() => setCount(c => c + 1)} title="Update count" />
           ),
+          headerRight: () => (<Ionicons size={30} name={"ios-add"} color="#fff" onPress={ () => { setModalVisible(true) }} />),
         });
       }, [navigation]);
 
@@ -83,13 +87,6 @@ export default function RuleScreen({ navigation, props }: any) {
                     </View>
                 </View>
             </Modal>
-            <Text>Count: {JSON.stringify(editing)}</Text>
-            <Pressable
-                style={[styles.button, styles.buttonOpen]}
-                onPress={() => setModalVisible(true)}
-            >
-                <Text style={styles.textStyle}>Show Modal</Text>
-            </Pressable>
         </View>
     );
 }
@@ -99,7 +96,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      marginTop: 22
+      marginTop: 300
     },
     modalView: {
       margin: 20,
