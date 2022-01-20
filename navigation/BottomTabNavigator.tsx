@@ -158,7 +158,11 @@ function RuleNavigator() {
       <RuleStack.Screen
         name="RuleScreen"
         component={RuleScreen}
-        options={{ headerTitle: "Danh sách điều kiện chạy", headerStyle: styles.container, headerTitleAlign: "center" }}
+        options={{ headerTitle: "Danh sách điều kiện chạy", headerStyle: styles.container, headerTitleAlign: "center",
+        // headerLeft: () => (<Ionicons size={30} name={"ios-create"} color="#fff" onPress={ () => { console.log(1) }} />),
+        headerRight: () => (<Ionicons size={30} name={"ios-add"} color="#fff" onPress={ () => { console.log(1) }} />),
+      
+        }}
       />
     </RuleStack.Navigator>
   );

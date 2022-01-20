@@ -8,67 +8,73 @@ import {
     FlatList,
     TouchableOpacity,
 } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 import { Picker } from "@react-native-picker/picker";
 import { ListItem, Icon } from "react-native-elements";
 import { Text } from "./Themed";
 import { APIConfig } from "../config";
-import { alignItems, display, height } from "styled-system";
 
 interface Props {
     navigation: any;
     refreshing: any;
+    edit: any;
 }
 
 let itemIndex = 0;
 const axios = require("axios");
+let initState = true
+let currentFarm = [
+    {
+        _id: '',
+        name: '',
+        address: ''
+    }
+]
+
+let currentItem = [
+    {
+        duration: 10,
+        state: false,
+        _id: "-",
+        name: '-',
+        located: {
+            _id: "-",
+            name: '-',
+            address: '-',
+            owner: "-"
+        },
+        owner: {
+            _id: "-",
+            email: '-',
+            full_name: '-'
+        },
+        sensor: {
+            _id: "-",
+            name: '-',
+            owner: "-"
+        },
+        threshold: 0,
+        start_at: '00:00',
+        end_at: '00:00',
+        expr: '-',
+        target_value: '-',
+        machine: {
+            _id: "-",
+            name: '-',
+            owner: "-"
+        },
+        value: '-',
+        display: false,
+    },
+];
 
 export class RuleList extends Component<Props> {
     state = {
         selectedLanguage: 'all',
+        isEdit: this.props.edit,
         refreshing: this.props.refreshing,
-        farms: [
-            {
-                _id: '',
-                name: '',
-                address: ''
-            }
-        ],
-        items: [
-            {
-                duration: 10,
-                state: false,
-                _id: "61e7712ae5e2904ecc3534ab",
-                name: 'dieukienchaytest1',
-                located: {
-                    _id: "61d8a1f56af3d133b457bc14",
-                    name: 'sf4',
-                    address: 'Tp. Hồ Chí Minh',
-                    owner: "61baad92ac7a62194cb3983e"
-                },
-                owner: {
-                    _id: "61baad92ac7a62194cb3983e",
-                    email: 'username@email.com',
-                    full_name: 'Người Dùng'
-                },
-                sensor: {
-                    _id: "61dad0b6358dcd2a40913e2b",
-                    name: 'st1',
-                    owner: "61baad92ac7a62194cb3983e"
-                },
-                threshold: 50,
-                start_at: '10:00',
-                end_at: '18:00',
-                expr: '>=',
-                target_value: 'ON',
-                machine: {
-                    _id: "61e51ec211066b3468da3bd0",
-                    name: 'mca1',
-                    owner: "61baad92ac7a62194cb3983e"
-                },
-                value: '-',
-                display: true,
-            },
-        ],
+        farms: currentFarm,
+        items: currentItem,
     };
 
     _mapData(data: any) {
@@ -98,6 +104,7 @@ export class RuleList extends Component<Props> {
 
         axios(config)
             .then(function (response: any) {
+                currentItem = response.data
                 self._mapData(response.data);
             })
             .catch(function (error: any) {
@@ -121,7 +128,8 @@ export class RuleList extends Component<Props> {
 
         axios(config)
             .then(function (response: any) {
-                self.setState({ farms: response.data });
+                currentFarm = response.data
+                self.setState({ farms: currentFarm });
             })
             .catch(function (error: any) {
                 console.log(error);
@@ -179,10 +187,23 @@ export class RuleList extends Component<Props> {
         this.setState({ items: newData });
     }
 
+    renderRemoveButton() {
+        if (this.state.isEdit) return;
+
+        return (
+            <View style={{ flexDirection: "row", padding: 7, justifyContent: "space-between", alignItems: "center" }}>
+                <Ionicons size={30} name={"ios-remove-circle"} color="red" onPress={() => { console.log(1) }} />
+            </View>
+        )
+    }
+
     componentDidMount() {
-        // if (this.state.refreshing) return
-        this._getFarms()
-        this._getRules();
+        if (initState || this.state.refreshing) {
+            this._getFarms()
+            this._getRules()
+            initState = false;
+        } 
+        itemIndex = 0
     }
 
     renderTitle(
@@ -200,6 +221,7 @@ export class RuleList extends Component<Props> {
                 }}
             >
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    {this.renderRemoveButton()}
                     <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-between" }}>
                         <Text style={styles.title} numberOfLines={1}>
                             {item.name}
