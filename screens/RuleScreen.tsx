@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from "@react-native-picker/picker";
 import { APIConfig } from "../config";
-import { backgroundColor } from 'styled-system';
+import { backgroundColor, borderRadius, padding } from 'styled-system';
 
 const { height } = Dimensions.get("window");
 
@@ -41,7 +41,7 @@ export default function RuleScreen({ navigation, props }: any) {
         });
     }, []);
 
-    
+
     const _getFarms = () => {
         const axios = require("axios");
 
@@ -140,29 +140,84 @@ export default function RuleScreen({ navigation, props }: any) {
                                 placeholder="Tên điều kiện"
                             />
                         </View>
-                        <View style={{marginVertical: 10 }}>
+                        <View style={{ marginVertical: 10 }}>
                             <Picker
                                 selectedValue={selectedValue}
                                 onValueChange={(itemValue, itemIndex) =>
                                     setSelectedValue(itemValue)
                                 }
-                                style={{margin: 0, padding: 0}}
-                                itemStyle={{ height: 44 }}
+                                style={{ marginHorizontal: -10, marginVertical: 10, fontSize: 16 }}
+                                itemStyle={{ height: 45, fontSize: 16, paddingVertical: 10 }}
                             >
                                 {farms.map((farm) => {
                                     return (
-                                        <Picker.Item key={farm._id} label={farm.name + ' - ' + farm.address} value={farm._id} />
+                                        <Picker.Item style={{ fontSize: 16 }} key={farm._id} label={farm.name + ' - ' + farm.address} value={farm._id} />
                                     )
                                 })}
                             </Picker>
                         </View>
-                        {/* <View style={styles.modalView}>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Tên điều kiện"
-                                keyboardType="numeric"
-                            />
-                        </View> */}
+                        <View style={[{ borderRadius: 7, padding: 10 }]}>
+                            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                                    <Text style={{ color: "gray", fontSize: 16 }}>Khung giờ</Text>
+                                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                            <TextInput
+                                                style={{ fontSize: 16 }}
+                                                placeholder="08"
+                                                keyboardType="numeric"
+                                                maxLength={2}
+                                            />
+                                            <Text style={{ fontSize: 16 }}>:</Text>
+                                            <TextInput
+                                                style={{ fontSize: 16 }}
+                                                placeholder="00"
+                                                keyboardType="numeric"
+                                                maxLength={2}
+                                            />
+                                        </View>
+                                        <Text style={{ fontSize: 16 }}> - </Text>
+                                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                            <TextInput
+                                                style={{ fontSize: 16 }}
+                                                placeholder="10"
+                                                keyboardType="numeric"
+                                                maxLength={2}
+                                            />
+                                            <Text style={{ fontSize: 16 }}>:</Text>
+                                            <TextInput
+                                                style={{ fontSize: 16 }}
+                                                placeholder="00"
+                                                keyboardType="numeric"
+                                                maxLength={2}
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
+                                {/* <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" /> */}
+                            </View>
+                            <View style={{ marginVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: "rgba(225,225,225, 1)" }}></View>
+                            <TouchableOpacity>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                    <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                                        <Text style={{ color: "gray", fontSize: 16 }}>Cảm biến</Text>
+                                        <Text style={{ color: "gray", fontSize: 16 }}></Text>
+                                    </View>
+                                    <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[{ marginVertical: 15, borderRadius: 7, padding: 10 }]}>
+                            <TouchableOpacity>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                    <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                                        <Text style={{ color: "gray", fontSize: 16 }}>Thiết bị</Text>
+                                        <Text style={{ color: "gray", fontSize: 16 }}></Text>
+                                    </View>
+                                    <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -175,8 +230,9 @@ const styles = StyleSheet.create({
     },
     centeredView: {
         flex: 1,
-        marginTop: 63,
-        borderRadius: 10
+        marginTop: 60,
+        borderRadius: 10,
+        fontSize: 16
     },
     modalView: {
         marginVertical: 5,
@@ -187,12 +243,9 @@ const styles = StyleSheet.create({
             width: 0,
             height: 1,
         },
-        shadowOpacity: 0.18,
+        shadowOpacity: 0.2,
         shadowRadius: 1.00,
         elevation: 1,
-    },
-    buttonOpen: {
-        backgroundColor: "#F194FF",
     },
     textStyle: {
         fontWeight: "bold",

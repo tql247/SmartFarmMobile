@@ -216,16 +216,31 @@ export class RuleList extends Component<Props> {
                             <Ionicons size={30} name={"ios-remove-circle"} color="red" onPress={() => { console.log(1) }} />
                         </View>)
                     }
-                    <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-between" }}>
-                        <Text style={styles.title} numberOfLines={1}>
-                            {item.name}
-                        </Text>
-                        <Text>
-                            {item.located.name} - {item.located.address}
-                        </Text>
-                        <Text>Nếu {item.sensor.name} {item.expr} {item.threshold} thì {item.machine.name} {item.target_value}</Text>
-                        <Text>{item.start_at} - {item.end_at}</Text>
-                    </View>
+
+                    <TouchableOpacity
+                        disabled={!this.props.edit}
+                    // onPress={() =>
+                    //     this.props.navigation.navigate(
+                    //         item.forwardScreen || "ComicDetailScreen",
+                    //         {
+                    //             mangaProviderId: item.mangaProviderId,
+                    //             mangaTitle: item.title,
+                    //         }
+                    //     )
+                    // }
+                    >
+                        <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-between" }}>
+                            <Text style={styles.title} numberOfLines={1}>
+                                {item.name}
+                            </Text>
+                            <Text>
+                                {item.located.name} - {item.located.address}
+                            </Text>
+                            <Text>Nếu {item.sensor.name} {item.expr} {item.threshold} thì {item.machine.name} {item.target_value}</Text>
+                            <Text>{item.start_at} - {item.end_at}</Text>
+                        </View>
+                    </TouchableOpacity>
+
                     <View style={{ alignItems: "flex-end" }}>
                         <Switch
                             trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -274,19 +289,7 @@ export class RuleList extends Component<Props> {
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <View style={styles.imgContainer}>
-                            <TouchableOpacity
-                            // onPress={() =>
-                            //     this.props.navigation.navigate(
-                            //         item.forwardScreen || "ComicDetailScreen",
-                            //         {
-                            //             mangaProviderId: item.mangaProviderId,
-                            //             mangaTitle: item.title,
-                            //         }
-                            //     )
-                            // }
-                            >
-                                {this.renderItem(item)}
-                            </TouchableOpacity>
+                            {this.renderItem(item)}
                         </View>
                     )}
                 />
