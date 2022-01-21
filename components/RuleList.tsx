@@ -71,7 +71,6 @@ let currentItem = [
 export class RuleList extends Component<Props> {
     state = {
         selectedLanguage: 'all',
-        isEdit: this.props.edit,
         refreshing: this.props.refreshing,
         farms: currentFarm,
         items: currentItem,
@@ -187,22 +186,12 @@ export class RuleList extends Component<Props> {
         this.setState({ items: newData });
     }
 
-    renderRemoveButton() {
-        if (this.state.isEdit) return;
-
-        return (
-            <View style={{ flexDirection: "row", padding: 7, justifyContent: "space-between", alignItems: "center" }}>
-                <Ionicons size={30} name={"ios-remove-circle"} color="red" onPress={() => { console.log(1) }} />
-            </View>
-        )
-    }
-
     componentDidMount() {
         if (initState || this.state.refreshing) {
             this._getFarms()
             this._getRules()
             initState = false;
-        } 
+        }
         itemIndex = 0
     }
 
@@ -221,7 +210,12 @@ export class RuleList extends Component<Props> {
                 }}
             >
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    {this.renderRemoveButton()}
+                    {
+                        this.props.edit &&
+                        (<View style={{ flexDirection: "row", padding: 7, justifyContent: "space-between", alignItems: "center" }}>
+                            <Ionicons size={30} name={"ios-remove-circle"} color="red" onPress={() => { console.log(1) }} />
+                        </View>)
+                    }
                     <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-between" }}>
                         <Text style={styles.title} numberOfLines={1}>
                             {item.name}
