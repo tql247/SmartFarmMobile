@@ -75,6 +75,8 @@ export default function RuleScreen({ navigation, props }: any) {
     const [machines, setMachines] = React.useState(currentMachine);
     const [selectedValue, setSelectedValue] = React.useState("");
 
+    const [ruleName, setRuleName] = React.useState("")
+
 
     const [selectedExpr, setEpxr] = React.useState(">=");
     const [selectedTarget, setTarget] = React.useState("ON");
@@ -169,6 +171,12 @@ export default function RuleScreen({ navigation, props }: any) {
         console.log(3)
     };
 
+    const addRules = () => {
+        console.log(ruleName)
+        console.log(selectedExpr)
+        setModalVisible(!modalVisible)
+    }
+
     React.useLayoutEffect(() => {
         navigation.setOptions({
             headerLeft: () => (
@@ -219,7 +227,7 @@ export default function RuleScreen({ navigation, props }: any) {
                                 Điều kiện chạy
                             </Text>
                             <Pressable
-                                onPress={() => setModalVisible(!modalVisible)}
+                                onPress={() => addRules()}
                             >
                                 <Text style={styles.textStyle}>Done</Text>
                             </Pressable>
@@ -229,6 +237,8 @@ export default function RuleScreen({ navigation, props }: any) {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Tên điều kiện"
+                                    value={ruleName}
+                                    onChangeText={str => setRuleName(str)}
                                 />
                             </View>
                             <View style={{ marginVertical: 10 }}>
@@ -386,6 +396,7 @@ export default function RuleScreen({ navigation, props }: any) {
 
 const styles = StyleSheet.create({
     input: {
+        fontSize: 16
     },
     centeredView: {
         flex: 1,
