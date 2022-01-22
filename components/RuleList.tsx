@@ -6,6 +6,7 @@ import {
     Dimensions,
     Switch,
     FlatList,
+    Alert,
     TouchableOpacity,
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
@@ -13,11 +14,13 @@ import { Picker } from "@react-native-picker/picker";
 import { ListItem, Icon } from "react-native-elements";
 import { Text } from "./Themed";
 import { APIConfig } from "../config";
+import { display } from "styled-system";
 
 interface Props {
     navigation: any;
     refreshing: any;
     edit: any;
+    ruleForm: any;
 }
 
 let itemIndex = 0;
@@ -111,6 +114,53 @@ export class RuleList extends Component<Props> {
             });
     }
 
+    _deleteRule(_id: string) {
+        Alert.alert(
+            "Are your sure?",
+            "Are you sure you want to remove this beautiful box?",
+            [
+                // The "Yes" button
+                {
+                    text: "Yes",
+                    onPress: () => {
+
+                        const _itemIndex = this.state.items.findIndex(x => x._id === _id);
+                        const cpyItems = this.state.items;
+                        cpyItems[_itemIndex].display = false;
+
+                        this.setState({ items: cpyItems });
+
+                        const axios = require("axios");
+
+                        const config = {
+                            method: "get",
+                            url: APIConfig["api"]["delete_rule"].replace(
+                                "{_id}",
+                                _id
+                            ),
+                            headers: {},
+                        };
+
+                        const self = this;
+
+                        axios(config)
+                            .then(function (response: any) {
+                            })
+                            .catch(function (error: any) {
+                                console.log(error);
+                            });
+                    },
+                },
+                // The "No" button
+                // Does nothing but dismiss the dialog when tapped
+                {
+                    text: "No",
+                },
+            ]
+        );
+
+    }
+
     _getFarms() {
         const axios = require("axios");
 
@@ -186,6 +236,30 @@ export class RuleList extends Component<Props> {
         this.setState({ items: newData });
     }
 
+    editRule(_id: string) {
+        const _itemIndex = this.state.items.findIndex(x => x._id === _id);
+        const cpyItems = this.state.items;
+        const rule = cpyItems[_itemIndex]
+        console.log('-----------------------')
+        console.log(rule)
+        console.log(rule.located._id)
+
+        this.props.ruleForm.setModalVisible(true)
+        this.props.ruleForm.setRuleID(rule._id)
+        this.props.ruleForm.setRuleName(rule.name)
+        this.props.ruleForm.setSelectedValue(rule.located._id)
+        this.props.ruleForm.setSH(rule.start_at.split(':')[0])
+        this.props.ruleForm.setSM(rule.start_at.split(':')[1])
+        this.props.ruleForm.setEH(rule.end_at.split(':')[0])
+        this.props.ruleForm.setEM(rule.end_at.split(':')[1])
+        this.props.ruleForm.setSensor(rule.sensor._id)
+        this.props.ruleForm.setEpxr(rule.expr)
+        this.props.ruleForm.setThreshold(`${rule.threshold || ""}`)
+        this.props.ruleForm.setMachine(rule.machine._id)
+        this.props.ruleForm.setTarget(rule.target_value)
+        this.props.ruleForm.setDuration(`${rule.duration}`)
+    }
+
     componentDidMount() {
         if (initState || this.state.refreshing) {
             this._getFarms()
@@ -204,42 +278,37 @@ export class RuleList extends Component<Props> {
         return (
             <View
                 style={{
-                    backgroundColor:
-                        itemIndex % 2 === 0 ? "rgba(225,225,225,0.45)" : "transparent",
+                    backgroundColor: "transparent",
                     padding: 5,
                 }}
             >
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                     {
                         this.props.edit &&
-                        (<View style={{ flexDirection: "row", padding: 7, justifyContent: "space-between", alignItems: "center" }}>
-                            <Ionicons size={30} name={"ios-remove-circle"} color="red" onPress={() => { console.log(1) }} />
+                        (<View style={{ flexDirection: "row", padding: 7, justifyContent: "center", alignItems: "center" }}>
+                            <Ionicons size={30} name={"ios-remove-circle"} color="red" onPress={() => { this._deleteRule(item._id) }} />
                         </View>)
                     }
+                    <View style={{ flex: 1, flexGrow: 1, flexDirection: "column", justifyContent: "space-between" }}>
 
-                    <TouchableOpacity
-                        disabled={!this.props.edit}
-                    // onPress={() =>
-                    //     this.props.navigation.navigate(
-                    //         item.forwardScreen || "ComicDetailScreen",
-                    //         {
-                    //             mangaProviderId: item.mangaProviderId,
-                    //             mangaTitle: item.title,
-                    //         }
-                    //     )
-                    // }
-                    >
-                        <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-between" }}>
+                        <TouchableOpacity
+                            disabled={!this.props.edit}
+                            onPress={() =>
+                                this.editRule(item._id)
+                            }
+                        >
                             <Text style={styles.title} numberOfLines={1}>
                                 {item.name}
                             </Text>
+                            <Text>{item.machine.name} {item.target_value}</Text>
+                            {(item.threshold !== null) && (
+                                <Text>{item.sensor.name} {item.expr} {item.threshold}</Text>
+                            )}
                             <Text>
                                 {item.located.name} - {item.located.address}
                             </Text>
-                            <Text>Nếu {item.sensor.name} {item.expr} {item.threshold} thì {item.machine.name} {item.target_value}</Text>
-                            <Text>{item.start_at} - {item.end_at}</Text>
-                        </View>
-                    </TouchableOpacity>
+                        </TouchableOpacity>
+                    </View>
 
                     <View style={{ alignItems: "flex-end" }}>
                         <Switch
@@ -249,6 +318,8 @@ export class RuleList extends Component<Props> {
                             value={item.state}
                             onValueChange={(value) => this.updateRuleState(value, item._id)}
                         />
+                        <Text style={{}}>{item.start_at} - {item.end_at}</Text>
+                        <Text style={{}}>{item.duration} phút tắt</Text>
                     </View>
 
                 </View>
@@ -347,3 +418,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
 });
+function setShowBox(arg0: boolean) {
+    throw new Error("Function not implemented.");
+}
+

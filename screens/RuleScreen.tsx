@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from "@react-native-picker/picker";
 import { APIConfig } from "../config";
-import { width } from 'styled-system';
+import { flex, width } from 'styled-system';
 import Storage from '../libs/Storage'
 
 const { height } = Dimensions.get("window");
@@ -72,20 +72,24 @@ export default function RuleScreen({ navigation, props }: any) {
     const [modalVisible, setModalVisible] = React.useState(false);
     let [editing, setEditing] = React.useState(false);
     const insets = useSafeAreaInsets();
+
     const [farms, setFarms] = React.useState(currentFarm);
     const [sensors, setSensors] = React.useState(currentSensors);
     const [machines, setMachines] = React.useState(currentMachine);
+
     const [selectedValue, setSelectedValue] = React.useState("");
     const [selectedSensor, setSensor] = React.useState("");
     const [selectedMachine, setMachine] = React.useState("");
 
-    const [ruleName, setRuleName] = React.useState("")
+    const [ruleID, setRuleID] = React.useState("")
+    const [ruleName, setRuleName] = React.useState("Tên điều kiện")
 
+    const [threshold, setThreshold] = React.useState("")
 
     const [sh, setSH] = React.useState("00")
-    const [sm, setSM] = React.useState("")
-    const [eh, setEH] = React.useState("")
-    const [em, setEM] = React.useState("")
+    const [sm, setSM] = React.useState("00")
+    const [eh, setEH] = React.useState("23")
+    const [em, setEM] = React.useState("00")
 
     const [duration, setDuration] = React.useState("10")
 
@@ -122,6 +126,7 @@ export default function RuleScreen({ navigation, props }: any) {
             .then(function (response: any) {
                 currentFarm = response.data
                 setFarms(currentFarm)
+                if (currentFarm) setSelectedValue(currentFarm[0]._id)
             })
             .catch(function (error: any) {
                 console.log(error);
@@ -146,6 +151,7 @@ export default function RuleScreen({ navigation, props }: any) {
             .then(function (response: any) {
                 currentSensors = response.data
                 setSensors(currentSensors)
+                if (currentSensors) setSensor(currentSensors[0]._id)
             })
             .catch(function (error: any) {
                 console.log(error);
@@ -169,6 +175,7 @@ export default function RuleScreen({ navigation, props }: any) {
             .then(function (response: any) {
                 currentMachine = response.data
                 setMachines(currentMachine)
+                if (currentMachine) setMachine(currentMachine[0]._id)
             })
             .catch(function (error: any) {
                 console.log(error);
@@ -184,35 +191,54 @@ export default function RuleScreen({ navigation, props }: any) {
                 // <Button onPress={() => setCount(c => c + 1)} title="Update count" />
             ),
         });
-        console.log(3)
     };
 
-    
+
     const [scrollEnabled, setScrollEnabled] = React.useState(true);
 
-    const onContentSizeChange = (contentWidth: number, contentHeight: number) => {
-        // setScrollEnabled()
-        console.log(contentHeight)
-    };
+    const createOrUpdateRule = () => {
+        // setModalVisible(!modalVisible)
+        console.log(selectedValue)
 
-    const addRules = () => {
-        console.log('---------------------')
-        console.log('ruleName', ruleName)
-        // farm
-        console.log('selectedValue', selectedValue)
-        // time 
+        console.log(ruleID?"update":"create")
 
-        console.log('sh', sh)
+        var axios = require('axios');
+        var data = {
+            "_id": ruleID,
+            "farm": selectedValue,
+            "name": ruleName,
+            "owner": "61baad92ac7a62194cb3983e",
+            "sensor": selectedSensor,
+            "sensorValue": threshold,
+            "start_at": sh + ":" + sm,
+            "end_at": eh + ":" + em,
+            "duration": duration,
+            "state": "false",
+            "expr": selectedExpr,
+            "target": selectedTarget,
+            "machine": selectedMachine
+        };
 
-        // sensor
-        console.log('selectedSensor', selectedSensor)
-        // expr
-        console.log('selectedExpr', selectedExpr)
+        var config = {
+            method: 'post',
+            url: ruleID?APIConfig["api"]["update_rule"]:APIConfig["api"]["create_rule"],
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(data)
+        };
 
-        // machine
-        console.log('selectedMachine', selectedMachine)
-        // console.log()
-        console.log('selectedTarget', selectedTarget)
+        // return
+
+        axios(config)
+            .then(function (response: { data: any; }) {
+                console.log(JSON.stringify(response.data));
+                setRuleID("")
+                onRefresh() 
+            })
+            .catch(function (error: any) {
+                console.log(error);
+            });
 
         setModalVisible(!modalVisible)
     }
@@ -230,6 +256,23 @@ export default function RuleScreen({ navigation, props }: any) {
         _getMachines()
     }, [navigation]);
 
+    const ruleForm = {
+        setRuleID: setRuleID,
+        setModalVisible: setModalVisible,
+        setRuleName: setRuleName,
+        setSelectedValue: setSelectedValue,
+        setSH: setSH,
+        setSM: setSM,
+        setEH: setEH,
+        setEM: setEM,
+        setSensor: setSensor,
+        setEpxr: setEpxr,
+        setThreshold: setThreshold,
+        setMachine: setMachine,
+        setTarget: setTarget,
+        setDuration: setDuration,
+    }
+
     return (
         <View style={styles.container}>
             <FlatList
@@ -240,7 +283,7 @@ export default function RuleScreen({ navigation, props }: any) {
                 renderItem={({ item }) => (
                     <View style={styles.container}>
                         <View style={[styles.threadContainer, { margin: 0 }]}>
-                            <RuleList {...props} navigation={navigation} key={[editing, refreshing]} refreshing={refreshing} edit={editing} />
+                            <RuleList {...props} navigation={navigation} key={[editing, refreshing, ruleForm]} ruleForm={ruleForm} refreshing={refreshing} edit={editing} />
                         </View>
                     </View>
                 )}
@@ -259,29 +302,29 @@ export default function RuleScreen({ navigation, props }: any) {
 
                     <View style={styles.centeredView}>
 
-                        <View style={{ zIndex: 3,  elevation: 3, flexDirection: "row", justifyContent: "space-between", padding: 10, alignItems: "center", marginBottom: 20 }}>
+                        <View style={{ zIndex: 3, elevation: 3, flexDirection: "row", justifyContent: "space-between", padding: 5, alignItems: "center", marginBottom: 20 }}>
                             <Pressable
                                 onPress={() => setModalVisible(!modalVisible)}
                             >
-                                <Text style={styles.textStyle}>Cancel</Text>
+                                <Text style={[styles.textStyle, {padding: 10}]}>Cancel</Text>
                             </Pressable>
                             <Text style={{ fontSize: 18, fontWeight: "500" }}>
                                 Điều kiện chạy
                             </Text>
                             <Pressable
-                                onPress={() => addRules()}
+                                onPress={() => createOrUpdateRule()}
                             >
-                                <Text style={styles.textStyle}>Done</Text>
+                                <Text style={[styles.textStyle, {padding: 10}]}>Done</Text>
                             </Pressable>
                         </View>
-                                
+
                         <KeyboardAvoidingView
-                            behavior={"position"}
+                            behavior={"padding"}
+                            style={{ flex: 1 }}
                             keyboardVerticalOffset={60}
                         >
                             <ScrollView
                                 scrollEnabled={true}
-                                onContentSizeChange={onContentSizeChange}
                             >
                                 <View style={{ margin: 5 }}>
                                     <View style={styles.modalView}>
@@ -296,7 +339,6 @@ export default function RuleScreen({ navigation, props }: any) {
                                         <Picker
                                             selectedValue={selectedValue}
                                             onValueChange={(itemValue, itemIndex) => {
-                                                console.log(itemValue)
                                                 setSelectedValue(itemValue)
                                             }}
                                             style={{ marginHorizontal: -10, marginVertical: 10, fontSize: 16 }}
@@ -396,9 +438,11 @@ export default function RuleScreen({ navigation, props }: any) {
                                         </View>
                                         <View style={{ flexDirection: "row", justifyContent: "center", flex: 1 }}>
                                             <TextInput
-                                                style={{ fontSize: 16 }}
+                                                style={{ fontSize: 16, flex: 1, textAlign: "center" }}
                                                 placeholder="00"
                                                 keyboardType="numeric"
+                                                value={threshold}
+                                                onChangeText={value => setThreshold(value)}
                                             />
                                         </View>
                                     </View>
@@ -459,7 +503,7 @@ export default function RuleScreen({ navigation, props }: any) {
                                     </View>
                                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
                                         <TextInput
-                                            style={{ fontSize: 16 }}
+                                            style={{ fontSize: 16, flex: 1, textAlign: "center", padding: 5 }}
                                             value={duration}
                                             onChangeText={value => setDuration(value)}
                                             placeholder="00 (phút)"
