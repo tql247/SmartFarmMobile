@@ -3,9 +3,11 @@ import * as React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Button, TextInput } from 'react-native';
 import { fontSize, fontWeight, width } from 'styled-system';
 import { RootStackParamList } from '../types';
+import Storage from '../libs/Storage'
 
 const logoRatio = 678 / 278;
 const loHeight = 30
+// Storage.set('a', 'hello')
 
 export default function LoginScreen({ navigation, }: StackScreenProps<RootStackParamList, 'NotFound'>) {
     return (

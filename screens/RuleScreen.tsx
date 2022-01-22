@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Dimensions, FlatList, RefreshControl, StyleSheet, TouchableOpacity, Modal, Pressable, Platform, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Dimensions, FlatList, RefreshControl, StyleSheet, TouchableOpacity, Modal, Pressable, Platform, TextInput, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView } from 'react-native';
 
 import { View, Text } from '../components/Themed';
 import { RuleList } from "../components/RuleList";
@@ -9,8 +9,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from "@react-native-picker/picker";
 import { APIConfig } from "../config";
 import { width } from 'styled-system';
+import Storage from '../libs/Storage'
 
 const { height } = Dimensions.get("window");
+
 
 const wait = (timeout: any) => {
     return new Promise(resolve => {
@@ -74,8 +76,18 @@ export default function RuleScreen({ navigation, props }: any) {
     const [sensors, setSensors] = React.useState(currentSensors);
     const [machines, setMachines] = React.useState(currentMachine);
     const [selectedValue, setSelectedValue] = React.useState("");
+    const [selectedSensor, setSensor] = React.useState("");
+    const [selectedMachine, setMachine] = React.useState("");
 
     const [ruleName, setRuleName] = React.useState("")
+
+
+    const [sh, setSH] = React.useState("00")
+    const [sm, setSM] = React.useState("")
+    const [eh, setEH] = React.useState("")
+    const [em, setEM] = React.useState("")
+
+    const [duration, setDuration] = React.useState("10")
 
 
     const [selectedExpr, setEpxr] = React.useState(">=");
@@ -90,7 +102,7 @@ export default function RuleScreen({ navigation, props }: any) {
     }, []);
 
 
-    const _getFarms = () => {
+    const _getFarms = async () => {
         const axios = require("axios");
 
         const config = {
@@ -101,6 +113,10 @@ export default function RuleScreen({ navigation, props }: any) {
             ),
             headers: {},
         };
+
+
+        // const value = await Storage.get('a')
+        // console.log(value);
 
         axios(config)
             .then(function (response: any) {
@@ -171,9 +187,33 @@ export default function RuleScreen({ navigation, props }: any) {
         console.log(3)
     };
 
+    
+    const [scrollEnabled, setScrollEnabled] = React.useState(true);
+
+    const onContentSizeChange = (contentWidth: number, contentHeight: number) => {
+        // setScrollEnabled()
+        console.log(contentHeight)
+    };
+
     const addRules = () => {
-        console.log(ruleName)
-        console.log(selectedExpr)
+        console.log('---------------------')
+        console.log('ruleName', ruleName)
+        // farm
+        console.log('selectedValue', selectedValue)
+        // time 
+
+        console.log('sh', sh)
+
+        // sensor
+        console.log('selectedSensor', selectedSensor)
+        // expr
+        console.log('selectedExpr', selectedExpr)
+
+        // machine
+        console.log('selectedMachine', selectedMachine)
+        // console.log()
+        console.log('selectedTarget', selectedTarget)
+
         setModalVisible(!modalVisible)
     }
 
@@ -216,8 +256,10 @@ export default function RuleScreen({ navigation, props }: any) {
                 }}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+
                     <View style={styles.centeredView}>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", margin: 10, alignItems: "center", marginBottom: 20 }}>
+
+                        <View style={{ zIndex: 3,  elevation: 3, flexDirection: "row", justifyContent: "space-between", padding: 10, alignItems: "center", marginBottom: 20 }}>
                             <Pressable
                                 onPress={() => setModalVisible(!modalVisible)}
                             >
@@ -232,162 +274,206 @@ export default function RuleScreen({ navigation, props }: any) {
                                 <Text style={styles.textStyle}>Done</Text>
                             </Pressable>
                         </View>
-                        <View style={{ margin: 10 }}>
-                            <View style={styles.modalView}>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Tên điều kiện"
-                                    value={ruleName}
-                                    onChangeText={str => setRuleName(str)}
-                                />
-                            </View>
-                            <View style={{ marginVertical: 10 }}>
-                                <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        setSelectedValue(itemValue)
-                                    }
-                                    style={{ marginHorizontal: -10, marginVertical: 10, fontSize: 16 }}
-                                    itemStyle={{ height: 45, fontSize: 16, paddingVertical: 10 }}
-                                >
-                                    {farms.map((farm) => {
-                                        return (
-                                            <Picker.Item style={{ fontSize: 16 }} key={farm._id} label={farm.name + ' - ' + farm.address} value={farm._id} />
-                                        )
-                                    })}
-                                </Picker>
-                            </View>
-                            <View style={[{ borderRadius: 7, padding: 10 }]}>
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                                    <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-                                        <Text style={{ color: "gray", fontSize: 16 }}>Khung giờ</Text>
-                                        <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                                <TextInput
-                                                    style={{ fontSize: 16 }}
-                                                    placeholder="08"
-                                                    keyboardType="numeric"
-                                                    maxLength={2}
-                                                />
-                                                <Text style={{ fontSize: 16 }}>:</Text>
-                                                <TextInput
-                                                    style={{ fontSize: 16 }}
-                                                    placeholder="00"
-                                                    keyboardType="numeric"
-                                                    maxLength={2}
-                                                />
+                                
+                        <KeyboardAvoidingView
+                            behavior={"position"}
+                            keyboardVerticalOffset={60}
+                        >
+                            <ScrollView
+                                scrollEnabled={true}
+                                onContentSizeChange={onContentSizeChange}
+                            >
+                                <View style={{ margin: 5 }}>
+                                    <View style={styles.modalView}>
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholder="Tên điều kiện"
+                                            value={ruleName}
+                                            onChangeText={str => setRuleName(str)}
+                                        />
+                                    </View>
+                                    <View style={{ marginVertical: 10 }}>
+                                        <Picker
+                                            selectedValue={selectedValue}
+                                            onValueChange={(itemValue, itemIndex) => {
+                                                console.log(itemValue)
+                                                setSelectedValue(itemValue)
+                                            }}
+                                            style={{ marginHorizontal: -10, marginVertical: 10, fontSize: 16 }}
+                                            itemStyle={{ height: 45, fontSize: 16, paddingVertical: 10 }}
+                                        >
+                                            {farms.map((farm) => {
+                                                return (
+                                                    <Picker.Item style={{ fontSize: 16 }} key={farm._id} label={farm.name + ' - ' + farm.address} value={farm._id} />
+                                                )
+                                            })}
+                                        </Picker>
+                                    </View>
+                                    <View style={[{ borderRadius: 7, padding: 10 }]}>
+                                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                                                <Text style={{ color: "gray", fontSize: 16 }}>Khung giờ</Text>
+                                                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                                                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                                        <TextInput
+                                                            style={{ fontSize: 16 }}
+                                                            placeholder="00"
+                                                            value={sh}
+                                                            onChangeText={value => setSH(value)}
+                                                            keyboardType="numeric"
+                                                            maxLength={2}
+                                                        />
+                                                        <Text style={{ fontSize: 16 }}>:</Text>
+                                                        <TextInput
+                                                            style={{ fontSize: 16 }}
+                                                            placeholder="00"
+                                                            value={sm}
+                                                            onChangeText={value => setSM(value)}
+                                                            keyboardType="numeric"
+                                                            maxLength={2}
+                                                        />
+                                                    </View>
+                                                    <Text style={{ fontSize: 16 }}> - </Text>
+                                                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                                        <TextInput
+                                                            style={{ fontSize: 16 }}
+                                                            placeholder="10"
+                                                            keyboardType="numeric"
+                                                            value={eh}
+                                                            onChangeText={value => setEH(value)}
+                                                            maxLength={2}
+                                                        />
+                                                        <Text style={{ fontSize: 16 }}>:</Text>
+                                                        <TextInput
+                                                            style={{ fontSize: 16 }}
+                                                            placeholder="00"
+                                                            keyboardType="numeric"
+                                                            value={em}
+                                                            onChangeText={value => setEM(value)}
+                                                            maxLength={2}
+                                                        />
+                                                    </View>
+                                                </View>
                                             </View>
-                                            <Text style={{ fontSize: 16 }}> - </Text>
-                                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                                <TextInput
-                                                    style={{ fontSize: 16 }}
-                                                    placeholder="10"
-                                                    keyboardType="numeric"
-                                                    maxLength={2}
-                                                />
-                                                <Text style={{ fontSize: 16 }}>:</Text>
-                                                <TextInput
-                                                    style={{ fontSize: 16 }}
-                                                    placeholder="00"
-                                                    keyboardType="numeric"
-                                                    maxLength={2}
-                                                />
+                                            {/* <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" /> */}
+                                        </View>
+                                        <View style={{ marginVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: "rgba(225,225,225, 1)" }}></View>
+                                        <TouchableOpacity disabled={true}>
+                                            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                                <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                                                    <Text style={{ color: "gray", fontSize: 16 }}>Cảm biến</Text>
+                                                    <Text style={{ color: "gray", fontSize: 16 }}></Text>
+                                                </View>
+                                                {/* <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" /> */}
                                             </View>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <View style={{}}>
+                                        <Picker
+                                            selectedValue={selectedSensor}
+                                            onValueChange={(itemValue, itemIndex) =>
+                                                setSensor(itemValue)
+                                            }
+                                            style={{ marginHorizontal: -10, fontSize: 16 }}
+                                            itemStyle={{ height: 45, fontSize: 16, paddingVertical: 10 }}
+                                        >
+                                            {sensors.map((sensor) => {
+                                                return (
+                                                    <Picker.Item style={{ fontSize: 16 }} key={sensor._id} label={sensor.name} value={sensor._id} />
+                                                )
+                                            })}
+                                        </Picker>
+                                    </View>
+
+                                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                        <View style={{ borderRadius: 10, justifyContent: "center", flex: 1, borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(225,225,225, 1)" }}>
+                                            <TouchableOpacity onPress={() => setEpxr(selectedExpr === ">=" ? "<=" : ">=")}>
+                                                <View style={{ borderRadius: 10, padding: 10, flexGrow: 1 }}>
+                                                    <Text style={{ color: "gray", fontSize: 16, textAlign: "center" }}> {selectedExpr} </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{ flexDirection: "row", justifyContent: "center", flex: 1 }}>
+                                            <TextInput
+                                                style={{ fontSize: 16 }}
+                                                placeholder="00"
+                                                keyboardType="numeric"
+                                            />
                                         </View>
                                     </View>
-                                    {/* <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" /> */}
-                                </View>
-                                <View style={{ marginVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: "rgba(225,225,225, 1)" }}></View>
-                                <TouchableOpacity disabled={true}>
-                                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                                        <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-                                            <Text style={{ color: "gray", fontSize: 16 }}>Cảm biến</Text>
-                                            <Text style={{ color: "gray", fontSize: 16 }}></Text>
-                                        </View>
-                                        {/* <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" /> */}
+
+                                    <View style={[{ marginTop: 15, borderRadius: 7, padding: 10 }]}>
+                                        <TouchableOpacity disabled={true}>
+                                            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                                <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                                                    <Text style={{ color: "gray", fontSize: 16 }}>Thiết bị</Text>
+                                                    <Text style={{ color: "gray", fontSize: 16 }}></Text>
+                                                </View>
+                                                {/* <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" /> */}
+                                            </View>
+                                        </TouchableOpacity>
                                     </View>
-                                </TouchableOpacity>
-                            </View>
 
-                            <View style={{}}>
-                                <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        setSelectedValue(itemValue)
-                                    }
-                                    style={{ marginHorizontal: -10, fontSize: 16 }}
-                                    itemStyle={{ height: 45, fontSize: 16, paddingVertical: 10 }}
-                                >
-                                    {sensors.map((sensor) => {
-                                        return (
-                                            <Picker.Item style={{ fontSize: 16 }} key={sensor._id} label={sensor.name} value={sensor._id} />
-                                        )
-                                    })}
-                                </Picker>
-                            </View>
-
-                            <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-                                <View style={{ borderRadius: 10, justifyContent: "center", flex: 1, borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(225,225,225, 1)"  }}>
-                                    <TouchableOpacity onPress={() => setEpxr(selectedExpr===">="?"<=":">=")}>
-                                        <View style={{borderRadius: 10, padding: 10, flexGrow: 1}}>
-                                            <Text style={{ color: "gray", fontSize: 16, textAlign: "center"}}> {selectedExpr} </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={{ flexDirection: "row", justifyContent: "center", flex: 1}}>
-                                    <TextInput
-                                        style={{ fontSize: 16 }}
-                                        placeholder="00"
-                                        keyboardType="numeric"
-                                    />
-                                </View>
-                            </View>
-
-                            <View style={[{ marginTop: 15, borderRadius: 7, padding: 10 }]}>
-                                <TouchableOpacity disabled={true}>
-                                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                                        <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-                                            <Text style={{ color: "gray", fontSize: 16 }}>Thiết bị</Text>
-                                            <Text style={{ color: "gray", fontSize: 16 }}></Text>
-                                        </View>
-                                        {/* <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" /> */}
+                                    <View style={{}}>
+                                        <Picker
+                                            selectedValue={selectedMachine}
+                                            onValueChange={(itemValue, itemIndex) =>
+                                                setMachine(itemValue)
+                                            }
+                                            style={{ marginHorizontal: -10, fontSize: 16 }}
+                                            itemStyle={{ height: 45, fontSize: 16, paddingVertical: 10 }}
+                                        >
+                                            {machines.map((machine) => {
+                                                return (
+                                                    <Picker.Item style={{ fontSize: 16 }} key={machine._id} label={machine.name} value={machine._id} />
+                                                )
+                                            })}
+                                        </Picker>
                                     </View>
-                                </TouchableOpacity>
-                            </View>
 
-                            <View style={{}}>
-                                <Picker
-                                    selectedValue={selectedValue}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        setSelectedValue(itemValue)
-                                    }
-                                    style={{ marginHorizontal: -10, fontSize: 16 }}
-                                    itemStyle={{ height: 45, fontSize: 16, paddingVertical: 10 }}
-                                >
-                                    {machines.map((machine) => {
-                                        return (
-                                            <Picker.Item style={{ fontSize: 16 }} key={machine._id} label={machine.name} value={machine._id} />
-                                        )
-                                    })}
-                                </Picker>
-                            </View>
+                                    <View style={{}}>
+                                        <Picker
+                                            selectedValue={selectedTarget}
+                                            onValueChange={(itemValue, itemIndex) =>
+                                                setTarget(itemValue)
+                                            }
+                                            style={{ marginHorizontal: -10, fontSize: 16 }}
+                                            itemStyle={{ height: 45, fontSize: 16, paddingVertical: 10 }}
+                                        >
+                                            <Picker.Item style={{ fontSize: 16 }} key="ON" label="ON" value="ON" />
+                                            <Picker.Item style={{ fontSize: 16 }} key="OFF" label="OFF" value="OFF" />
+                                        </Picker>
+                                    </View>
 
-                            <View style={{}}>
-                                <Picker
-                                    selectedValue={selectedTarget}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        setTarget(itemValue)
-                                    }
-                                    style={{ marginHorizontal: -10, fontSize: 16 }}
-                                    itemStyle={{ height: 45, fontSize: 16, paddingVertical: 10 }}
-                                >
-                                    <Picker.Item style={{ fontSize: 16 }} key="ON" label="ON" value="ON" />
-                                    <Picker.Item style={{ fontSize: 16 }} key="OFF" label="OFF" value="OFF" />
-                                </Picker>
-                            </View>
+                                    <View style={[{ marginTop: 15, borderRadius: 7, padding: 10 }]}>
+                                        <TouchableOpacity disabled={true}>
+                                            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                                <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                                                    <Text style={{ color: "gray", fontSize: 16 }}>Tự động tắt sau</Text>
+                                                    <Text style={{ color: "gray", fontSize: 16 }}></Text>
+                                                </View>
+                                                {/* <Ionicons size={20} name={"ios-chevron-forward-outline"} color="rgba(225,225,225, 1)" /> */}
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                                        <TextInput
+                                            style={{ fontSize: 16 }}
+                                            value={duration}
+                                            onChangeText={value => setDuration(value)}
+                                            placeholder="00 (phút)"
+                                            keyboardType="numeric"
+                                            maxLength={2}
+                                        />
+                                    </View>
 
-                        </View>
+                                </View>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+
                     </View>
+
                 </TouchableWithoutFeedback>
             </Modal>
         </View>
@@ -402,7 +488,9 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 60,
         borderRadius: 10,
-        fontSize: 16
+        fontSize: 16,
+        overflow: 'hidden',
+        backgroundColor: 'white'
     },
     modalView: {
         marginVertical: 5,
