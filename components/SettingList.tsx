@@ -1,13 +1,17 @@
 import { ListItem, Icon } from 'react-native-elements'
 
 import React, { Component } from "react";
-import {Image, ScrollView, StyleSheet, View, Dimensions} from "react-native";
-import {Card} from "react-native-elements";
-import {Text} from "./Themed";
+import { Image, ScrollView, StyleSheet, View, Dimensions, TouchableOpacity } from "react-native";
+import { Card } from "react-native-elements";
+import { Text } from "./Themed";
 
-const {height} = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
-export class SettingList extends Component {
+interface Props {
+    navigation: any
+}
+
+export class SettingList extends Component<Props> {
     state = {
         screenHeight: 0,
         settings: [
@@ -43,13 +47,20 @@ export class SettingList extends Component {
                 <View style={styles.listContainer}>
                     {
                         this.state.settings.map((item, i) => (
-                            <ListItem key={i} style={styles.item}>
-                                <Icon name={item.icon} />
-                                <ListItem.Content>
-                                    <ListItem.Title>{item.title}</ListItem.Title>
-                                </ListItem.Content>
-                                <ListItem.Chevron />
-                            </ListItem>
+                            <TouchableOpacity
+                                key={i} 
+                                onPress={() => (this.props.navigation.navigate(
+                                    "ProfileDetailScreen"
+                                ))}
+                            >
+                                <ListItem key={i} style={styles.item}>
+                                    <Icon name={item.icon} />
+                                    <ListItem.Content>
+                                        <ListItem.Title>{item.title}</ListItem.Title>
+                                    </ListItem.Content>
+                                    <ListItem.Chevron />
+                                </ListItem>
+                            </TouchableOpacity>
                         ))
                     }
                 </View>

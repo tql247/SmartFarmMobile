@@ -42,6 +42,7 @@ export type RuleParamList = {
 
 export type ProfileParamList = {
   ProfileScreen: undefined;
+  ProfileDetailScreen: undefined;
 };
 
 export type NotificationParamList = {

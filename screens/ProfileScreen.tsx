@@ -1,24 +1,24 @@
 import * as React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
-import {SettingList} from "../components/SettingList";
-import {LogoutComponent} from "../components/LogoutComponent";
+import { SettingList } from "../components/SettingList";
+import { LogoutComponent } from "../components/LogoutComponent";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ props, route, navigation }: any) {
   return (
     <View style={styles.container}>
       <View style={[styles.centroid]}>
         <Image
-            resizeMode="cover"
-            style={[{ width: 200, height: 200 }, styles.imageCover]}
-            source={require('../assets/images/logo.png')}
+          resizeMode="cover"
+          style={[{ width: 200, height: 200 }, styles.imageCover]}
+          source={require('../assets/images/logo.png')}
         />
       </View>
       <View style={styles.settings}>
         <View style={styles.settingsCombo}>
-          <SettingList />
+          <SettingList  {...props} navigation={navigation} />
           <View style={styles.settingsCombo}>
             <LogoutComponent />
           </View>

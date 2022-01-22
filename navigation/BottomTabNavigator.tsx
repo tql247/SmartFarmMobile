@@ -24,6 +24,7 @@ import LinkingConfiguration from './LinkingConfiguration';
 import ListItemScreen from "../screens/ListItemScreen";
 import { ListItem, Icon } from 'react-native-elements';
 import ReadingScreen from "../screens/ReadingScreen";
+import ProfileDetailScreen from '../screens/ProfileDetailScreen';
 
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
@@ -206,6 +207,11 @@ function ProfileNavigator() {
       <ProfileStack.Screen
         name="ProfileScreen"
         component={ProfileScreen}
+        options={{  headerTitle: 'Profile Settings', headerTitleAlign: "center"}}
+      />
+      <ProfileStack.Screen
+        name="ProfileDetailScreen"
+        component={ProfileDetailScreen}
         options={{  headerTitle: 'Profile Settings', headerTitleAlign: "center"}}
       />
     </ProfileStack.Navigator>

@@ -1,25 +1,17 @@
 import * as React from 'react';
-import {Dimensions, FlatList, StyleSheet} from 'react-native';
+import { Dimensions, FlatList, StyleSheet } from 'react-native';
 
 import { View } from '../components/Themed';
-import {ItemListing} from "../components/ItemListing";
+import { ItemListing } from "../components/ItemListing";
 
-const {height} = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
-export default function ListItemScreen({props, route, navigation} : any) {
+export default function ListItemScreen({ props, route, navigation }: any) {
     navigation.setOptions({ headerTitle: route.params.subject })
 
     return (
         <View style={styles.container}>
-            <FlatList
-                data={[1]}
-                numColumns={1}
-                renderItem={({item}) => (
-                    <View style={styles.container}>
-                        <ItemListing {...props} navigation={navigation}/>
-                    </View>
-                ) }
-            />
+            <ItemListing {...props} navigation={navigation} />
         </View>
     );
 }
