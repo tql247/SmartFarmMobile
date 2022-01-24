@@ -185,7 +185,7 @@ function NotificationNavigator() {
       <NotificationStack.Screen
         name="NotificationScreen"
         component={NotificationScreen}
-        options={{ headerTitle: 'Notifications', headerTitleAlign: "center"}}
+        options={{ headerTitle: 'Thông báo', headerTitleAlign: "center"}}
       />
     </NotificationStack.Navigator>
   );

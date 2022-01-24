@@ -17,12 +17,8 @@ export default function ProfileScreen({ props, route, navigation }: any) {
         />
       </View>
       <View style={styles.settings}>
-        <View style={styles.settingsCombo}>
-          <SettingList  {...props} navigation={navigation} />
-          <View style={styles.settingsCombo}>
-            <LogoutComponent />
-          </View>
-        </View>
+        <SettingList {...props} navigation={navigation} />
+        <LogoutComponent {...props} navigation={navigation}  />
       </View>
     </View>
   );
@@ -57,8 +53,6 @@ const styles = StyleSheet.create({
     borderColor: "#ccc"
   },
   settings: {
-    flexGrow: 1,
-    flex: 1,
     borderWidth: 0,
     borderColor: "transparent",
     shadowColor: 'transparent',
@@ -67,7 +61,6 @@ const styles = StyleSheet.create({
   settingsCombo: {
     marginTop: 10,
     flexGrow: 1,
-    flex: 1,
     width: '100%',
     minWidth: '100%',
     borderWidth: 0,

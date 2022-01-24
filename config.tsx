@@ -5,6 +5,7 @@ const api = `http://${HOST}:${PORT}`
 export const APIConfig = {
     'api': {
         'get_notification': api +  `/notification/get_by_owner/{owner_id}`,
+        'get_account': api +  `/account/get_by_id/{owner_id}`,
         'get_farms': api +  `/farm/get_by_owner/{owner_id}`,
         'get_machine': api +  `/machine/get_by_owner/{owner_id}`,
         'get_sensor': api +  `/sensor/get_by_owner/{owner_id}`,
@@ -15,6 +16,7 @@ export const APIConfig = {
         'set_rule_state': api +  `/rule/set_state`,
         'create_rule': api +  `/rule/create`,
         'update_rule': api +  `/rule/update`,
+        'update_account': api +  `/account/update`,
         'delete_rule': api +  `/rule/delete/{_id}`
         // 
         

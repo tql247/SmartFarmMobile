@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import { Image, ScrollView, StyleSheet, View, Dimensions, TouchableOpacity } from "react-native";
 import { Card } from "react-native-elements";
 import { Text } from "./Themed";
+import { marginBottom } from 'styled-system';
 
 const { height } = Dimensions.get("window");
 
@@ -16,55 +17,35 @@ export class SettingList extends Component<Props> {
         screenHeight: 0,
         settings: [
             {
-                title: 'Account Setting',
-                icon: 'account-circle'
-            },
-            {
-                title: 'Saved',
-                icon: 'cloud-download'
-            },
-            {
-                title: 'About',
-                icon: 'info'
+                title: 'Thông tin tài khoản',
+                icon: 'account-circle',
+                navigate: "ProfileDetailScreen"
             },
         ]
     };
 
-    onContentSizeChange = (contentWidth: number, contentHeight: number) => {
-        this.setState({ screenHeight: contentHeight });
-    };
-
     render() {
-        const scrollEnabled = this.state.screenHeight > height;
-
         return (
-            <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={styles.scrollView}
-                scrollEnabled={scrollEnabled}
-                onContentSizeChange={this.onContentSizeChange}
-            >
-                <View style={styles.listContainer}>
-                    {
-                        this.state.settings.map((item, i) => (
-                            <TouchableOpacity
-                                key={i} 
-                                onPress={() => (this.props.navigation.navigate(
-                                    "ProfileDetailScreen"
-                                ))}
-                            >
-                                <ListItem key={i} style={styles.item}>
-                                    <Icon name={item.icon} />
-                                    <ListItem.Content>
-                                        <ListItem.Title>{item.title}</ListItem.Title>
-                                    </ListItem.Content>
-                                    <ListItem.Chevron />
-                                </ListItem>
-                            </TouchableOpacity>
-                        ))
-                    }
-                </View>
-            </ScrollView>
+            <View style={{paddingVertical: 10}}>
+                {
+                    this.state.settings.map((item, i) => (
+                        <TouchableOpacity
+                            key={i}
+                            onPress={() => (this.props.navigation.navigate(
+                                item.navigate
+                            ))}
+                        >
+                            <ListItem key={i} style={styles.item}>
+                                <Icon name={item.icon} />
+                                <ListItem.Content>
+                                    <ListItem.Title>{item.title}</ListItem.Title>
+                                </ListItem.Content>
+                                <ListItem.Chevron />
+                            </ListItem>
+                        </TouchableOpacity>
+                    ))
+                }
+            </View>
         );
     }
 }
@@ -78,15 +59,6 @@ const styles = StyleSheet.create({
         minWidth: '100%',
         margin: 0,
         padding: 0
-    },
-    listContainer: {
-        width: '100%',
-        minWidth: '100%',
-        margin: 0,
-        padding: 0,
-        borderWidth: 0,
-        borderColor: "transparent",
-        shadowColor: 'transparent',
     },
     item: {
         marginTop: 1,

@@ -43,6 +43,7 @@ export type RuleParamList = {
 export type ProfileParamList = {
   ProfileScreen: undefined;
   ProfileDetailScreen: undefined;
+  LoginScreen: undefined;
 };
 
 export type NotificationParamList = {
