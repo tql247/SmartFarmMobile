@@ -66,9 +66,6 @@ export default function LoginScreen({ navigation, }: StackScreenProps<RootStackP
             });
     }
 
-    React.useLayoutEffect(() => {
-    }, [navigation]);
-
     return (
         <View style={styles.container}>
             <View style={{ width: '100%', justifyContent: 'space-around' }}>

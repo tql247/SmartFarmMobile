@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {Dimensions, FlatList, RefreshControl, StyleSheet} from 'react-native';
+import { Dimensions, FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import { View } from '../components/Themed';
-import {MachineList} from "../components/MachineList";
+import { MachineList } from "../components/MachineList";
 import Storage from '../libs/Storage'
 
-const {height} = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const wait = (timeout: any) => {
     return new Promise(resolve => {
@@ -13,13 +13,16 @@ const wait = (timeout: any) => {
     });
 };
 
-export default function MachineScreen({ navigation, props } : any) {
+export default function MachineScreen({ navigation, props }: any) {
     const [refreshing, setRefreshing] = React.useState(false);
+    const [isLogin, setIsLogin] = React.useState(false)
 
     const _checkLogin = async () => {
         const _id = await Storage.get('_id')
         if (!_id) {
             navigation.replace('LoginScreen')
+        } else {
+            setIsLogin(true)
         }
     }
 
@@ -29,39 +32,41 @@ export default function MachineScreen({ navigation, props } : any) {
         wait(2000).then(() => setRefreshing(false));
     }, []);
 
-
-    React.useLayoutEffect(() => {
-      navigation.setOptions({ headerTitle: 'Thông tin tài khoản' })
-      _checkLogin()
-    }, [navigation]);
+    React.useEffect(() => {
+        _checkLogin()
+    }, [])
 
 
     return (
         <View style={styles.container}>
-          <FlatList
-              data={[1]}
-              numColumns={1}
-              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
-                  <View style={styles.container}>
-                      <View style={[styles.threadContainer, {margin: 0}]}>
-                          <MachineList {...props} navigation={navigation} key={refreshing} refreshing={refreshing} />
-                      </View>
-                  </View>
-              ) }
-          />
+            {
+                isLogin && (
+                    <FlatList
+                        data={[1]}
+                        numColumns={1}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item }) => (
+                            <View style={styles.container}>
+                                <View style={[styles.threadContainer, { margin: 0 }]}>
+                                    <MachineList {...props} navigation={navigation} key={refreshing} refreshing={refreshing} />
+                                </View>
+                            </View>
+                        )}
+                    />
+                    )
+            }
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    borderWidth: 0,
-    borderColor: "transparent",
-    shadowColor: 'transparent',
-  },
+    container: {
+        flex: 1,
+        borderWidth: 0,
+        borderColor: "transparent",
+        shadowColor: 'transparent',
+    },
     scrollView: {
         borderWidth: 0,
         borderColor: "transparent",
