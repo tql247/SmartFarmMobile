@@ -70,6 +70,13 @@ export default function ProfileDetailScreen({ props, route, navigation }: any) {
     axios(config)
       .then(function (response: { data: any; }) {
         console.log(JSON.stringify(response.data));
+        Alert.alert(
+          "Thành công",
+          "Thông tin đã cập nhật thành công",
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+        );
       })
       .catch(function (error: any) {
         Alert.alert(
