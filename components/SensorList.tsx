@@ -13,6 +13,7 @@ import { ListItem, Icon } from "react-native-elements";
 
 import { Text } from "./Themed";
 import { APIConfig } from "../config";
+import Storage from "../libs/Storage";
 
 interface Props {
     navigation: any;
@@ -41,13 +42,13 @@ export class SensorList extends Component<Props> {
                 located: {
                     address: "Tp. Hồ Chí Minh",
                     name: "sf4",
-                    owner: "61baad92ac7a62194cb3983e",
+                    owner: "",
                     _id: "61d8a1f56af3d133b457bc14",
                 },
                 owner: {
                     email: "email222311321",
                     full_name: "full_name2",
-                    _id: "61baad92ac7a62194cb3983e",
+                    _id: "",
                 },
                 value: "-",
                 display: true,
@@ -71,14 +72,16 @@ export class SensorList extends Component<Props> {
         }, 1000)
     }
 
-    _getSensors() {
+    async _getSensors() {
         const axios = require("axios");
+
+        const owner_id = await Storage.get('_id')
 
         const config = {
             method: "get",
             url: APIConfig["api"]["get_sensor"].replace(
                 "{owner_id}",
-                "61baad92ac7a62194cb3983e"
+                `${owner_id}`
             ),
             headers: {},
         };
@@ -95,14 +98,15 @@ export class SensorList extends Component<Props> {
     }
 
 
-    _getFarms() {
+    async _getFarms() {
         const axios = require("axios");
+        const owner_id = await Storage.get('_id')
 
         const config = {
             method: "get",
             url: APIConfig["api"]["get_farms"].replace(
                 "{owner_id}",
-                "61baad92ac7a62194cb3983e"
+                `${owner_id}`
             ),
             headers: {},
         };
@@ -199,7 +203,7 @@ export class SensorList extends Component<Props> {
                         </Text>
                     </View>
                     <View>
-                        <Text style={{fontSize: 35}}> {value}{unit}</Text>
+                        <Text style={{ fontSize: 35 }}> {value}{unit}</Text>
                     </View>
                 </View>
             </View>

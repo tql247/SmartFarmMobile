@@ -3,6 +3,7 @@ import {Image, ScrollView, StyleSheet, View, Dimensions} from "react-native";
 import {Card} from "react-native-elements";
 import {Text} from "./Themed";
 import { APIConfig } from "../config";
+import Storage from '../libs/Storage'
 
 const {height} = Dimensions.get("window");
 
@@ -24,14 +25,15 @@ export class NotificationList extends Component {
     };
 
     
-    _getNottifications() {
+    async _getNottifications() {
         const axios = require("axios");
+        const owner_id = await Storage.get('_id')
 
         const config = {
             method: "get",
             url: APIConfig["api"]["get_notification"].replace(
                 "{owner_id}",
-                "61baad92ac7a62194cb3983e"
+                `${owner_id}`
             ),
             headers: {},
         };

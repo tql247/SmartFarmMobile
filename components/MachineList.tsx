@@ -13,6 +13,7 @@ import { ListItem, Icon } from "react-native-elements";
 import { Text } from "./Themed";
 import { APIConfig } from "../config";
 import { alignItems, display, height } from "styled-system";
+import Storage from "../libs/Storage";
 
 interface Props {
     navigation: any;
@@ -80,14 +81,16 @@ export class MachineList extends Component<Props> {
         this.setState({ items: newData });
     }
 
-    _getMachines() {
+    async _getMachines() {
         const axios = require("axios");
+        const owner_id = await Storage.get('_id')
+
 
         const config = {
             method: "get",
             url: APIConfig["api"]["get_machine"].replace(
                 "{owner_id}",
-                "61baad92ac7a62194cb3983e"
+                `${owner_id}`
             ),
             headers: {},
         };
@@ -118,14 +121,15 @@ export class MachineList extends Component<Props> {
         return value.data;
     }
 
-    _getFarms() {
+    async _getFarms() {
         const axios = require("axios");
+        const owner_id = await Storage.get('_id')
 
         const config = {
             method: "get",
             url: APIConfig["api"]["get_farms"].replace(
                 "{owner_id}",
-                "61baad92ac7a62194cb3983e"
+                `${owner_id}`
             ),
             headers: {},
         };

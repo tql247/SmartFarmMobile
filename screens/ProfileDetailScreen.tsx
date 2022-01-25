@@ -6,8 +6,6 @@ import { APIConfig } from "../config";
 import Storage from "../libs/Storage";
 
 export default function ProfileDetailScreen({ props, route, navigation }: any) {
-  // const value = await Storage.get('a')
-  // console.log(value);
 
 
   const [email, setEmail] = React.useState("")
@@ -16,25 +14,23 @@ export default function ProfileDetailScreen({ props, route, navigation }: any) {
   const [address, setAddress] = React.useState("")
   const [password, setPassword] = React.useState("")
   const [newpassword, setNewPassword] = React.useState("")
-  const [_id, setID] = React.useState("61baad92ac7a62194cb3983e")
+  const [_id, setID] = React.useState("")
 
   const [role, setRole] = React.useState("user")
 
   const _getAccountInfor = async () => {
     const axios = require("axios");
+    const owner_id = await Storage.get('_id')
+    console.log('owner_id', owner_id)
 
     const config = {
       method: "get",
       url: APIConfig["api"]["get_account"].replace(
         "{owner_id}",
-        "61baad92ac7a62194cb3983e"
+        `${owner_id}`
       ),
       headers: {},
     };
-
-
-    const value = await Storage.get('a')
-    console.log('value', value);
 
     axios(config)
       .then(function (response: any) {
@@ -70,8 +66,6 @@ export default function ProfileDetailScreen({ props, route, navigation }: any) {
       },
       data: JSON.stringify(data)
     };
-
-    // return
 
     axios(config)
       .then(function (response: { data: any; }) {

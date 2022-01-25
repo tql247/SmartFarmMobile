@@ -4,6 +4,7 @@ const api = `http://${HOST}:${PORT}`
 
 export const APIConfig = {
     'api': {
+        'login': api +  `/account/login`,
         'get_notification': api +  `/notification/get_by_owner/{owner_id}`,
         'get_account': api +  `/account/get_by_id/{owner_id}`,
         'get_farms': api +  `/farm/get_by_owner/{owner_id}`,

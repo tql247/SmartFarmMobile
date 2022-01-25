@@ -34,13 +34,13 @@ let currentSensors = [
         located: {
             address: "Tp. Hồ Chí Minh",
             name: "sf4",
-            owner: "61baad92ac7a62194cb3983e",
+            owner: "",
             _id: "61d8a1f56af3d133b457bc14",
         },
         owner: {
             email: "email222311321",
             full_name: "full_name2",
-            _id: "61baad92ac7a62194cb3983e",
+            _id: "",
         },
         value: "-",
         display: true,
@@ -108,12 +108,13 @@ export default function RuleScreen({ navigation, props }: any) {
 
     const _getFarms = async () => {
         const axios = require("axios");
+        const owner_id = await Storage.get('_id')
 
         const config = {
             method: "get",
             url: APIConfig["api"]["get_farms"].replace(
                 "{owner_id}",
-                "61baad92ac7a62194cb3983e"
+                `${owner_id}`
             ),
             headers: {},
         };
@@ -134,14 +135,15 @@ export default function RuleScreen({ navigation, props }: any) {
     }
 
 
-    const _getSensors = () => {
+    const _getSensors = async () => {
         const axios = require("axios");
+        const owner_id = await Storage.get('_id')
 
         const config = {
             method: "get",
             url: APIConfig["api"]["get_sensor"].replace(
                 "{owner_id}",
-                "61baad92ac7a62194cb3983e"
+                `${owner_id}`
             ),
             headers: {},
         };
@@ -159,14 +161,16 @@ export default function RuleScreen({ navigation, props }: any) {
     }
 
 
-    const _getMachines = () => {
+    const _getMachines = async () => {
         const axios = require("axios");
+        const owner_id = await Storage.get('_id')
+
 
         const config = {
             method: "get",
             url: APIConfig["api"]["get_machine"].replace(
                 "{owner_id}",
-                "61baad92ac7a62194cb3983e"
+                `${owner_id}`
             ),
             headers: {},
         };
@@ -196,18 +200,17 @@ export default function RuleScreen({ navigation, props }: any) {
 
     const [scrollEnabled, setScrollEnabled] = React.useState(true);
 
-    const createOrUpdateRule = () => {
+    const createOrUpdateRule = async () => {
         // setModalVisible(!modalVisible)
-        console.log(selectedValue)
+        const owner_id = await Storage.get('_id')
 
-        console.log(ruleID?"update":"create")
 
         var axios = require('axios');
         var data = {
             "_id": ruleID,
             "farm": selectedValue,
             "name": ruleName,
-            "owner": "61baad92ac7a62194cb3983e",
+            "owner": `${owner_id}`,
             "sensor": selectedSensor,
             "sensorValue": threshold,
             "start_at": sh + ":" + sm,
@@ -221,7 +224,7 @@ export default function RuleScreen({ navigation, props }: any) {
 
         var config = {
             method: 'post',
-            url: ruleID?APIConfig["api"]["update_rule"]:APIConfig["api"]["create_rule"],
+            url: ruleID ? APIConfig["api"]["update_rule"] : APIConfig["api"]["create_rule"],
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -234,7 +237,7 @@ export default function RuleScreen({ navigation, props }: any) {
             .then(function (response: { data: any; }) {
                 console.log(JSON.stringify(response.data));
                 setRuleID("")
-                onRefresh() 
+                onRefresh()
             })
             .catch(function (error: any) {
                 console.log(error);
@@ -306,7 +309,7 @@ export default function RuleScreen({ navigation, props }: any) {
                             <Pressable
                                 onPress={() => setModalVisible(!modalVisible)}
                             >
-                                <Text style={[styles.textStyle, {padding: 10}]}>Cancel</Text>
+                                <Text style={[styles.textStyle, { padding: 10 }]}>Cancel</Text>
                             </Pressable>
                             <Text style={{ fontSize: 18, fontWeight: "500" }}>
                                 Điều kiện chạy
@@ -314,7 +317,7 @@ export default function RuleScreen({ navigation, props }: any) {
                             <Pressable
                                 onPress={() => createOrUpdateRule()}
                             >
-                                <Text style={[styles.textStyle, {padding: 10}]}>Done</Text>
+                                <Text style={[styles.textStyle, { padding: 10 }]}>Done</Text>
                             </Pressable>
                         </View>
 
