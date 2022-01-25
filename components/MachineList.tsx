@@ -67,7 +67,10 @@ export class MachineList extends Component<Props> {
         }
 
         this.setState({ items: newData });
-        this.updateMachineValue();
+        
+        setInterval(() => {
+            this.updateMachineValue();
+        }, 1000)
     }
 
     async updateMachineValue() {
@@ -239,7 +242,7 @@ export class MachineList extends Component<Props> {
                             value={active}
                             onValueChange={(value) => this.updateMachineState(value, idx)}
                         />
-                        <Text style={styles.chapter}>Trạng thái: -</Text>
+                        <Text style={styles.chapter}>Trạng thái: {active?"ON":"OFF"}</Text>
                     </View>
                 </View>
             </View>
