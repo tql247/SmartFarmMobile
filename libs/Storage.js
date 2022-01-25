@@ -20,6 +20,16 @@ class Storage {
             // saving error
         }
     }
+
+    async remove(key) {
+        try {
+            const value = await AsyncStorage.removeItem(key)
+            console.log(key, value)
+            return value
+        } catch (e) {
+            // saving error
+        }
+    }
 }
 
 export default new Storage();

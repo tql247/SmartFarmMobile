@@ -1,13 +1,9 @@
 import * as React from 'react';
-import {Dimensions, FlatList, RefreshControl, StyleSheet, TouchableOpacity} from 'react-native';
+import {Dimensions, FlatList, RefreshControl, StyleSheet} from 'react-native';
 
-import { Text, View } from '../components/Themed';
+import { View } from '../components/Themed';
 import {MachineList} from "../components/MachineList";
-import {NewComic} from "../components/NewComic";
-import {GotMovieList} from "../components/GotMovieList";
-import {TopTrend} from "../components/TopTrend";
-import {Icon} from "react-native-elements";
-import {ListTag} from "../components/ListTag";
+import Storage from '../libs/Storage'
 
 const {height} = Dimensions.get("window");
 
@@ -20,12 +16,25 @@ const wait = (timeout: any) => {
 export default function MachineScreen({ navigation, props } : any) {
     const [refreshing, setRefreshing] = React.useState(false);
 
+    const _checkLogin = async () => {
+        const _id = await Storage.get('_id')
+        if (!_id) {
+            navigation.replace('LoginScreen')
+        }
+    }
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
         wait(2000).then(() => setRefreshing(false));
     }, []);
+
+
+    React.useLayoutEffect(() => {
+      navigation.setOptions({ headerTitle: 'Thông tin tài khoản' })
+      _checkLogin()
+    }, [navigation]);
+
 
     return (
         <View style={styles.container}>
