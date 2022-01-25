@@ -6,8 +6,12 @@ import { APIConfig } from "../config";
 import Storage from '../libs/Storage'
 
 const {height} = Dimensions.get("window");
+interface Props {
+    navigation: any;
+    refreshing: any;
+}
 
-export class NotificationList extends Component {
+export class NotificationList extends Component<Props> {
 
     state = {
         screenHeight: 0,
