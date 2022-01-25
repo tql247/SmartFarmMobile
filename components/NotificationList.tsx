@@ -13,9 +13,9 @@ export class NotificationList extends Component {
         screenHeight: 0,
         notifications: [
             {
-                created_at: '2022-01-20 20:12:00',
-                subject: 'Đèn A ON',
-                detail: '21',
+                created_at: '',
+                subject: '',
+                detail: '',
             },
         ]
     };
