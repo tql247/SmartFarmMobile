@@ -18,52 +18,60 @@ import Storage from "../libs/Storage";
 interface Props {
     navigation: any;
     refreshing: any;
+    owner_id: any;
 }
 
 let itemIndex = 0;
+let initState = true
 let updateMachineStateInterval: number | undefined = undefined;
 const axios = require("axios");
+let currentFarm = [
+    {
+        _id: '',
+        name: '',
+        address: ''
+    }
+]
+
+let currentItem = [
+    {
+        _id: "0",
+        name: "-",
+        located: {
+            address: "-",
+            name: "-",
+            owner: "-",
+            _id: "-",
+        },
+        owner: {
+            email: "-",
+            full_name: "-",
+            _id: "-",
+        },
+        value: "-",
+        display: true,
+        active: false,
+        state: '-'
+    },
+];
 
 export class MachineList extends Component<Props> {
     state = {
         refreshing: this.props.refreshing,
+        owner_id: this.props.owner_id,
         selectedLanguage: 'all',
-        farms: [
-            {
-                _id: '',
-                name: '',
-                address: ''
-            }
-        ],
-        items: [
-            {
-                _id: "0",
-                name: "-",
-                located: {
-                    address: "-",
-                    name: "-",
-                    owner: "-",
-                    _id: "-",
-                },
-                owner: {
-                    email: "-",
-                    full_name: "-",
-                    _id: "-",
-                },
-                value: "-",
-                display: true,
-                active: false,
-            },
-        ],
+        farms: currentFarm,
+        items: currentItem,
         active: false,
     };
 
-    _mapData(data: any) {
+    async _mapData(data: any) {
         const newData = [];
 
         for (let machine of data) {
-            machine.active = false;
+            machine.active = await this._getMachineValue(machine._id);
             machine.display = true;
+            machine.state = '-'
             newData.push(machine);
         }
 
@@ -78,23 +86,20 @@ export class MachineList extends Component<Props> {
         const newData = [];
 
         for (let machine of this.state.items) {
-            machine.active = await this._getMachineValue(machine._id);
+            machine.state = await this._getMachineValue(machine._id)?"ON":"OFF";
             newData.push(machine);
         }
 
         this.setState({ items: newData });
     }
 
-    async _getMachines() {
+    _getMachines() {
         const axios = require("axios");
-        const owner_id = await Storage.get('_id')
-
-
         const config = {
             method: "get",
             url: APIConfig["api"]["get_machine"].replace(
                 "{owner_id}",
-                `${owner_id}`
+                `${this.props.owner_id}`
             ),
             headers: {},
         };
@@ -103,6 +108,7 @@ export class MachineList extends Component<Props> {
 
         axios(config)
             .then(function (response: any) {
+                currentItem = response.data
                 self._mapData(response.data);
             })
             .catch(function (error: any) {
@@ -125,15 +131,15 @@ export class MachineList extends Component<Props> {
         return value.data;
     }
 
-    async _getFarms() {
+    _getFarms() {
         const axios = require("axios");
-        const owner_id = await Storage.get('_id')
+        console.log('this.props.owner_id', this.props.owner_id)
 
         const config = {
             method: "get",
             url: APIConfig["api"]["get_farms"].replace(
                 "{owner_id}",
-                `${owner_id}`
+                `${this.props.owner_id}`
             ),
             headers: {},
         };
@@ -142,6 +148,7 @@ export class MachineList extends Component<Props> {
 
         axios(config)
             .then(function (response: any) {
+                currentFarm = response.data
                 self.setState({ farms: response.data });
             })
             .catch(function (error: any) {
@@ -150,7 +157,6 @@ export class MachineList extends Component<Props> {
     }
 
     updateMachineState(value: boolean, _id: string) {
-        console.log('updateMachineStateInterval', updateMachineStateInterval)
         clearInterval(updateMachineStateInterval);
 
         const _itemIndex = this.state.items.findIndex((x) => x._id === _id);
@@ -158,7 +164,6 @@ export class MachineList extends Component<Props> {
 
         cpyItems[_itemIndex].active = value;
         this.setState({ items: cpyItems });
-        console.log(value, _id);
 
         var data = JSON.stringify({
             "_id": _id,
@@ -210,10 +215,13 @@ export class MachineList extends Component<Props> {
     }
 
     componentDidMount() {
+        if (initState || this.state.refreshing) {
+            this._getFarms()
+            this._getMachines();
+            initState = false;
+        }
         // if (this.state.refreshing) return
 
-        this._getFarms()
-        this._getMachines();
     }
 
     renderTitle(
@@ -221,6 +229,7 @@ export class MachineList extends Component<Props> {
         name: string,
         located: { name: string; address: string },
         active: boolean,
+        state: string,
         display: boolean
     ) {
         if (!display) return;
@@ -251,7 +260,7 @@ export class MachineList extends Component<Props> {
                             value={active}
                             onValueChange={(value) => this.updateMachineState(value, idx)}
                         />
-                        <Text style={styles.chapter}>Trạng thái: {active ? "ON" : "OFF"}</Text>
+                        <Text style={styles.chapter}>Trạng thái: {state}</Text>
                     </View>
                 </View>
             </View>
@@ -261,7 +270,7 @@ export class MachineList extends Component<Props> {
     renderItem(item: any) {
         return (
             <View style={styles.imgContainer}>
-                {this.renderTitle(item._id, item.name, item.located, item.active, item.display)}
+                {this.renderTitle(item._id, item.name, item.located, item.active, item.state, item.display)}
             </View>
         );
     }

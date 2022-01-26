@@ -12,6 +12,7 @@ const wait = (timeout: any) => {
         setTimeout(resolve, timeout);
     });
 };
+let owner_id: string | null | undefined = undefined;
 
 export default function MachineScreen({ navigation, props }: any) {
     const [refreshing, setRefreshing] = React.useState(false);
@@ -22,6 +23,8 @@ export default function MachineScreen({ navigation, props }: any) {
         if (!_id) {
             navigation.replace('LoginScreen')
         } else {
+            owner_id = _id
+            console.log('owner_id', owner_id)
             setIsLogin(true)
         }
     }
@@ -49,7 +52,7 @@ export default function MachineScreen({ navigation, props }: any) {
                         renderItem={({ item }) => (
                             <View style={styles.container}>
                                 <View style={[styles.threadContainer, { margin: 0 }]}>
-                                    <MachineList {...props} navigation={navigation} key={refreshing} refreshing={refreshing} />
+                                    <MachineList {...props} navigation={navigation} owner_id={owner_id} key={refreshing} refreshing={refreshing} />
                                 </View>
                             </View>
                         )}
