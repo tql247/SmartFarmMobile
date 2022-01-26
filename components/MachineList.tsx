@@ -178,12 +178,14 @@ export class MachineList extends Component<Props> {
 
         axios(config) 
             .then(function (response: { data: any; }) {
-                updateMachineStateInterval = setInterval(() => {
-                    self.updateMachineValue();
-                }, 1000)
             })
             .catch(function (error: any) {
                 console.log(error);
+            })
+            .done(function () {
+                updateMachineStateInterval = setInterval(() => {
+                    self.updateMachineValue();
+                }, 1000)
             });
 
     }
