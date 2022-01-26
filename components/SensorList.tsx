@@ -244,6 +244,7 @@ export class SensorList extends Component<Props> {
                     renderItem={({ item }) => (
                         <View style={styles.imgContainer}>
                             <TouchableOpacity
+                                disabled={true}
                             // onPress={() =>
                             //     this.props.navigation.navigate(
                             //         item.forwardScreen || "ComicDetailScreen",

@@ -21,6 +21,7 @@ interface Props {
 }
 
 let itemIndex = 0;
+let updateMachineStateInterval: number | undefined = undefined;
 const axios = require("axios");
 
 export class MachineList extends Component<Props> {
@@ -67,8 +68,8 @@ export class MachineList extends Component<Props> {
         }
 
         this.setState({ items: newData });
-        
-        setInterval(() => {
+
+        updateMachineStateInterval = setInterval(() => {
             this.updateMachineValue();
         }, 1000)
     }
@@ -149,6 +150,9 @@ export class MachineList extends Component<Props> {
     }
 
     updateMachineState(value: boolean, _id: string) {
+        console.log('updateMachineStateInterval', updateMachineStateInterval)
+        clearInterval(updateMachineStateInterval);
+
         const _itemIndex = this.state.items.findIndex((x) => x._id === _id);
         const cpyItems = this.state.items;
 
@@ -170,10 +174,13 @@ export class MachineList extends Component<Props> {
             data: data
         };
 
-        axios(config)
+        const self = this;
+
+        axios(config) 
             .then(function (response: { data: any; }) {
-                console.log('JSON.stringify(response.data)');
-                console.log(JSON.stringify(response.data));
+                updateMachineStateInterval = setInterval(() => {
+                    self.updateMachineValue();
+                }, 1000)
             })
             .catch(function (error: any) {
                 console.log(error);
@@ -226,7 +233,7 @@ export class MachineList extends Component<Props> {
                 }}
             >
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <View style={{flex: 1, flexDirection: "column", justifyContent: "space-between"}}>
+                    <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-between" }}>
                         <Text style={styles.title} numberOfLines={1}>
                             {name}
                         </Text>
@@ -242,7 +249,7 @@ export class MachineList extends Component<Props> {
                             value={active}
                             onValueChange={(value) => this.updateMachineState(value, idx)}
                         />
-                        <Text style={styles.chapter}>Trạng thái: {active?"ON":"OFF"}</Text>
+                        <Text style={styles.chapter}>Trạng thái: {active ? "ON" : "OFF"}</Text>
                     </View>
                 </View>
             </View>
@@ -266,7 +273,7 @@ export class MachineList extends Component<Props> {
                         this.filterValueByFarm(itemValue)
                     }
                     style={styles.picker}
-                    itemStyle={{height: 44}}
+                    itemStyle={{ height: 44 }}
                 >
                     <Picker.Item label="All" value="all" />
                     {this.state.farms.map((farm) => {
@@ -283,6 +290,7 @@ export class MachineList extends Component<Props> {
                     renderItem={({ item }) => (
                         <View style={styles.imgContainer}>
                             <TouchableOpacity
+                                disabled={true}
                             // onPress={() =>
                             //     this.props.navigation.navigate(
                             //         item.forwardScreen || "ComicDetailScreen",
