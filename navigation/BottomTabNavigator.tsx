@@ -19,11 +19,9 @@ import { BottomTabParamList, NotificationParamList, ProfileParamList, MachinePar
 import {StyleSheet} from "react-native";
 import GradientHeaderTitle from "../components/GradientHeaderTitle";
 import NotificationScreen from "../screens/NotificationScreen";
-import ComicDetailScreen from "../screens/ComicDetailScreen";
 import LinkingConfiguration from './LinkingConfiguration';
 import ListItemScreen from "../screens/ListItemScreen";
 import { ListItem, Icon } from 'react-native-elements';
-import ReadingScreen from "../screens/ReadingScreen";
 import ProfileDetailScreen from '../screens/ProfileDetailScreen';
 
 
@@ -101,19 +99,6 @@ function MachineNavigator({navigation} : any) {
         name="MachineScreen"
         component={MachineScreen}
         options={{ headerTitle: "Danh sách thiết bị", headerStyle: styles.container, headerTitleAlign: "center", headerBackTitleVisible: false }}
-      />
-      <MachineStack.Screen
-        name="ComicDetailScreen"
-        component={ComicDetailScreen}
-        options={{ headerTitle: "Detail", headerStyle: styles.container, headerTitleAlign: "center", headerBackTitleVisible: false }}
-      />
-      <MachineStack.Screen
-        name="ListItemScreen"
-        component={ListItemScreen}
-        options={{  headerTitle: "Danh sách cảm biến", headerStyle: styles.container, headerTitleAlign: "center",
-            // headerLeft: () => (<Ionicons size={30} name={"ios-arrow-back"} onPress={ () => { navigation.goBack()}} />),
-            headerBackTitleVisible: false,
-        }}
       />
     </MachineStack.Navigator>
   );
