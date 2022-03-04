@@ -1,14 +1,8 @@
 import * as React from 'react';
-import {Dimensions, FlatList, RefreshControl, StyleSheet, TouchableOpacity} from 'react-native';
+import {Dimensions, FlatList, RefreshControl, StyleSheet} from 'react-native';
 
-import { Text, View } from '../components/Themed';
-import {MainViewScroll} from "../components/MainViewScroll";
+import { View } from '../components/Themed';
 import {SensorList} from "../components/SensorList";
-import {NewComic} from "../components/NewComic";
-import {GotMovieList} from "../components/GotMovieList";
-import {TopTrend} from "../components/TopTrend";
-import {Icon} from "react-native-elements";
-import {ListTag} from "../components/ListTag";
 
 const {height} = Dimensions.get("window");
 

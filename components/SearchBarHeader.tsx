@@ -2,8 +2,7 @@
 
 import * as React from 'react';
 import { SearchBar } from 'react-native-elements';
-import useColorScheme from '../hooks/useColorScheme';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 

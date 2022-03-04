@@ -5,10 +5,8 @@ import { Dimensions, FlatList, RefreshControl, StyleSheet, TouchableOpacity, Mod
 import { View, Text } from '../components/Themed';
 import { RuleList } from "../components/RuleList";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from "@react-native-picker/picker";
 import { APIConfig } from "../config";
-import { flex, width } from 'styled-system';
 import Storage from '../libs/Storage'
 
 const { height } = Dimensions.get("window");
@@ -29,17 +27,17 @@ let currentFarm = [
 let currentSensors = [
     {
         _id: "0",
-        name: "Comage",
+        name: "",
         unit: "",
         located: {
-            address: "Tp. Hồ Chí Minh",
-            name: "sf4",
+            address: "",
+            name: "",
             owner: "",
-            _id: "61d8a1f56af3d133b457bc14",
+            _id: "",
         },
         owner: {
-            email: "email222311321",
-            full_name: "full_name2",
+            email: "",
+            full_name: "",
             _id: "",
         },
         value: "-",

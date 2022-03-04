@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 import {
-    Image,
     StyleSheet,
     View,
-    Dimensions,
-    Switch,
     FlatList,
     TouchableOpacity,
 } from "react-native";
-import { ListItem, Icon } from "react-native-elements";
 import { Text } from "./Themed";
 import { APIConfig } from "../config";
 
@@ -96,7 +92,7 @@ export class FarmList extends Component<Props> {
     }
 
     async updateFarmValue() {
-        const newData = [] 
+        const newData = []
         for (let sensor of this.state.items) {
             sensor.value = await this._getFarmValue(sensor._id)
             newData.push(sensor)
@@ -109,9 +105,9 @@ export class FarmList extends Component<Props> {
         this._getFarms();
     }
 
-    renderRowData(idx: string, name: string, located: {name: string, address: string}, value: string) {
+    renderRowData(idx: string, name: string, located: { name: string, address: string }, value: string) {
         itemIndex++;
-        
+
         return (
             <View
                 style={{
@@ -120,7 +116,7 @@ export class FarmList extends Component<Props> {
                     height: 60
                 }}
             >
-                <View style={{ flexDirection: "row", justifyContent: "space-between"}}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                     <View>
                         <Text style={styles.title} numberOfLines={1}>
                             {name}
@@ -130,7 +126,7 @@ export class FarmList extends Component<Props> {
                         </Text>
                     </View>
                     <View>
-                    <Text> {value}  %</Text>
+                        <Text> {value}  %</Text>
                     </View>
                 </View>
             </View>
@@ -156,15 +152,15 @@ export class FarmList extends Component<Props> {
                     renderItem={({ item }) => (
                         <View style={styles.imgContainer}>
                             <TouchableOpacity
-                                // onPress={() =>
-                                //     this.props.navigation.navigate(
-                                //         item.forwardScreen || "ComicDetailScreen",
-                                //         {
-                                //             mangaProviderId: item.mangaProviderId,
-                                //             mangaTitle: item.title,
-                                //         }
-                                //     )
-                                // }
+                            // onPress={() =>
+                            //     this.props.navigation.navigate(
+                            //         item.forwardScreen || "ComicDetailScreen",
+                            //         {
+                            //             mangaProviderId: item.mangaProviderId,
+                            //             mangaTitle: item.title,
+                            //         }
+                            //     )
+                            // }
                             >
                                 {this.renderItem(item)}
                             </TouchableOpacity>

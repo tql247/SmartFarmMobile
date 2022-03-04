@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function GradientHeaderTitle() {

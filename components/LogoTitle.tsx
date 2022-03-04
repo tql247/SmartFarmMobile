@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, Image } from 'react-native';
+import { Image } from 'react-native';
 
 export default function LogoTitle() {
     return (

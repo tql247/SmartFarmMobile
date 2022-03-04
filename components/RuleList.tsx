@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import {
-    Image,
     StyleSheet,
     View,
-    Dimensions,
     Switch,
     FlatList,
     Alert,
@@ -11,10 +9,8 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from "@react-native-picker/picker";
-import { ListItem, Icon } from "react-native-elements";
 import { Text } from "./Themed";
 import { APIConfig } from "../config";
-import { display } from "styled-system";
 
 interface Props {
     navigation: any;
@@ -141,10 +137,9 @@ export class RuleList extends Component<Props> {
                             headers: {},
                         };
 
-                        const self = this;
 
                         axios(config)
-                            .then(function (response: any) {
+                            .then(function () {
                             })
                             .catch(function (error: any) {
                                 console.log(error);
@@ -340,7 +335,7 @@ export class RuleList extends Component<Props> {
             <View style={styles.flatListContainer}>
                 <Picker
                     selectedValue={this.state.selectedLanguage}
-                    onValueChange={(itemValue, itemIndex) =>
+                    onValueChange={(itemValue) =>
                         this.filterValueByFarm(itemValue)
                     }
                     style={styles.picker}
@@ -418,7 +413,4 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
 });
-function setShowBox(arg0: boolean) {
-    throw new Error("Function not implemented.");
-}
 

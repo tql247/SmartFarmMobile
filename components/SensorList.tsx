@@ -1,15 +1,11 @@
 import React, { Component } from "react";
 import {
-    Image,
     StyleSheet,
     View,
-    Dimensions,
-    Switch,
     FlatList,
     TouchableOpacity,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { ListItem, Icon } from "react-native-elements";
 
 import { Text } from "./Themed";
 import { APIConfig } from "../config";

@@ -12,7 +12,6 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import { RootStackParamList } from '../types';
 import BottomTabNavigator from './BottomTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
-import ReadingScreen from "../screens/ReadingScreen";
 import LoginScreen from '../screens/LoginScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {

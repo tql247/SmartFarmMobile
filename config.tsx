@@ -1,4 +1,4 @@
-const HOST = "192.168.0.100";
+const HOST = "192.168.0.102";
 const PORT = "5000";
 const api = `http://${HOST}:${PORT}`
 

@@ -19,9 +19,6 @@ import { BottomTabParamList, NotificationParamList, ProfileParamList, MachinePar
 import {StyleSheet} from "react-native";
 import GradientHeaderTitle from "../components/GradientHeaderTitle";
 import NotificationScreen from "../screens/NotificationScreen";
-import LinkingConfiguration from './LinkingConfiguration';
-import ListItemScreen from "../screens/ListItemScreen";
-import { ListItem, Icon } from 'react-native-elements';
 import ProfileDetailScreen from '../screens/ProfileDetailScreen';
 
 
