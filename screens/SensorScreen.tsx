@@ -3,6 +3,7 @@ import { Dimensions, FlatList, RefreshControl, StyleSheet } from "react-native";
 
 import { View } from "../components/Themed";
 import { SensorList } from "../components/SensorList";
+import Storage from "../libs/Storage";
 
 const { height } = Dimensions.get("window");
 
@@ -11,9 +12,22 @@ const wait = (timeout: any) => {
     setTimeout(resolve, timeout);
   });
 };
+let owner_id: string | null | undefined = undefined;
 
 export default function SensorScreen({ navigation, props }: any) {
   const [refreshing, setRefreshing] = React.useState(false);
+  const [isLogin, setIsLogin] = React.useState(false);
+
+  const _checkLogin = async () => {
+    const _id = await Storage.get("_id");
+    if (!_id) {
+      navigation.replace("LoginScreen");
+    } else {
+      owner_id = _id;
+      console.log("owner_id", owner_id);
+      setIsLogin(true);
+    }
+  };
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -21,8 +35,13 @@ export default function SensorScreen({ navigation, props }: any) {
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
+  React.useEffect(() => {
+    _checkLogin();
+  }, []);
+
   return (
     <View style={styles.container}>
+      { isLogin && (
       <FlatList
         data={[1]}
         numColumns={1}
@@ -36,6 +55,7 @@ export default function SensorScreen({ navigation, props }: any) {
               <SensorList
                 {...props}
                 navigation={navigation}
+                owner_id={owner_id}
                 key={refreshing}
                 refreshing={refreshing}
               />
@@ -43,6 +63,7 @@ export default function SensorScreen({ navigation, props }: any) {
           </View>
         )}
       />
+      )}
     </View>
   );
 }

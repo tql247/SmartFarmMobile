@@ -9,15 +9,19 @@ import Storage from "../libs/Storage";
 interface Props {
   navigation: any;
   refreshing: any;
+  owner_id: any;
 }
 
 let itemIndex = 0;
+let initState = true;
+let updateSensorValueInterval: number | undefined = undefined;
 const axios = require("axios");
 
 export class SensorList extends Component<Props> {
   state = {
     selectedLanguage: "All",
     refreshing: this.props.refreshing,
+    owner_id: this.props.owner_id,
     farms: [
       {
         _id: "",
@@ -27,18 +31,18 @@ export class SensorList extends Component<Props> {
     ],
     items: [
       {
-        _id: "0",
-        name: "Comage",
+        _id: "",
+        name: "",
         unit: "",
         located: {
-          address: "Tp. Hồ Chí Minh",
-          name: "sf4",
+          address: "",
+          name: "",
           owner: "",
-          _id: "61d8a1f56af3d133b457bc14",
+          _id: "",
         },
         owner: {
-          email: "email222311321",
-          full_name: "full_name2",
+          email: "",
+          full_name: "",
           _id: "",
         },
         value: "-",
@@ -57,8 +61,7 @@ export class SensorList extends Component<Props> {
     }
 
     this.setState({ items: newData });
-    this.updateSensorValue();
-    setInterval(() => {
+    updateSensorValueInterval = setInterval(() => {
       this.updateSensorValue();
     }, 1000);
   }
@@ -66,11 +69,9 @@ export class SensorList extends Component<Props> {
   async _getSensors() {
     const axios = require("axios");
 
-    const owner_id = await Storage.get("_id");
-
     const config = {
       method: "get",
-      url: APIConfig["api"]["get_sensor"].replace("{owner_id}", `${owner_id}`),
+      url: APIConfig["api"]["get_sensor"].replace("{owner_id}", `${this.props.owner_id}`),
       headers: {},
     };
 
@@ -87,11 +88,10 @@ export class SensorList extends Component<Props> {
 
   async _getFarms() {
     const axios = require("axios");
-    const owner_id = await Storage.get("_id");
 
     const config = {
       method: "get",
-      url: APIConfig["api"]["get_farms"].replace("{owner_id}", `${owner_id}`),
+      url: APIConfig["api"]["get_farms"].replace("{owner_id}", `${this.props.owner_id}`),
       headers: {},
     };
 
@@ -149,9 +149,11 @@ export class SensorList extends Component<Props> {
     this.setState({ items: newData });
   }
 
-  componentDidMount() {
-    // if (this.state.refreshing) return
+  componentWillUnmount() {
+    clearInterval(updateSensorValueInterval);
+  }
 
+  componentDidMount() {
     this._getFarms();
     this._getSensors();
   }

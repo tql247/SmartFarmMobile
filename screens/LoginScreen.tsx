@@ -5,18 +5,12 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Button,
   TextInput,
   Alert,
 } from "react-native";
-import { fontSize, fontWeight, width } from "styled-system";
 import { RootStackParamList } from "../types";
 import Storage from "../libs/Storage";
 import { APIConfig } from "../config";
-
-const logoRatio = 678 / 278;
-const loHeight = 30;
-// Storage.set('a', 'hello')
 
 export default function LoginScreen({
   navigation,

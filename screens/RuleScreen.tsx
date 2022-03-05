@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
-  Platform,
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
@@ -18,7 +17,6 @@ import {
 
 import { View, Text } from "../components/Themed";
 import { RuleList } from "../components/RuleList";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
 import { APIConfig } from "../config";
 import Storage from "../libs/Storage";
@@ -82,7 +80,6 @@ export default function RuleScreen({ navigation, props }: any) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   let [editing, setEditing] = React.useState(false);
-  const insets = useSafeAreaInsets();
 
   const [farms, setFarms] = React.useState(currentFarm);
   const [sensors, setSensors] = React.useState(currentSensors);
@@ -197,8 +194,6 @@ export default function RuleScreen({ navigation, props }: any) {
     });
   };
 
-  const [scrollEnabled, setScrollEnabled] = React.useState(true);
-
   const createOrUpdateRule = async () => {
     // setModalVisible(!modalVisible)
     const owner_id = await Storage.get("_id");
@@ -299,7 +294,7 @@ export default function RuleScreen({ navigation, props }: any) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
+        renderItem={() => (
           <View style={styles.container}>
             <View style={[styles.threadContainer, { margin: 0 }]}>
               <RuleList
@@ -366,7 +361,7 @@ export default function RuleScreen({ navigation, props }: any) {
                   <View style={{ marginVertical: 10 }}>
                     <Picker
                       selectedValue={selectedValue}
-                      onValueChange={(itemValue, itemIndex) => {
+                      onValueChange={(itemValue) => {
                         setSelectedValue(itemValue);
                       }}
                       style={{
@@ -504,7 +499,7 @@ export default function RuleScreen({ navigation, props }: any) {
                   <View style={{}}>
                     <Picker
                       selectedValue={selectedSensor}
-                      onValueChange={(itemValue, itemIndex) =>
+                      onValueChange={(itemValue) =>
                         setSensor(itemValue)
                       }
                       style={{ marginHorizontal: -10, fontSize: 16 }}
@@ -611,7 +606,7 @@ export default function RuleScreen({ navigation, props }: any) {
                   <View style={{}}>
                     <Picker
                       selectedValue={selectedMachine}
-                      onValueChange={(itemValue, itemIndex) =>
+                      onValueChange={(itemValue) =>
                         setMachine(itemValue)
                       }
                       style={{ marginHorizontal: -10, fontSize: 16 }}
@@ -637,7 +632,7 @@ export default function RuleScreen({ navigation, props }: any) {
                   <View style={{}}>
                     <Picker
                       selectedValue={selectedTarget}
-                      onValueChange={(itemValue, itemIndex) =>
+                      onValueChange={(itemValue) =>
                         setTarget(itemValue)
                       }
                       style={{ marginHorizontal: -10, fontSize: 16 }}

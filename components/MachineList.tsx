@@ -60,6 +60,10 @@ export class MachineList extends Component<Props> {
     active: false,
   };
 
+  sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   async _mapData(data: any) {
     const newData = [];
 
@@ -71,10 +75,9 @@ export class MachineList extends Component<Props> {
     }
 
     this.setState({ items: newData });
-
     updateMachineStateInterval = setInterval(() => {
       this.updateMachineValue();
-    }, 1000);
+    }, 1000)
   }
 
   async updateMachineValue() {
@@ -128,8 +131,6 @@ export class MachineList extends Component<Props> {
 
   _getFarms() {
     const axios = require("axios");
-    console.log("this.props.owner_id", this.props.owner_id);
-
     const config = {
       method: "get",
       url: APIConfig["api"]["get_farms"].replace(
@@ -152,8 +153,6 @@ export class MachineList extends Component<Props> {
   }
 
   updateMachineState(value: boolean, _id: string) {
-    clearInterval(updateMachineStateInterval);
-
     const _itemIndex = this.state.items.findIndex((x) => x._id === _id);
     const cpyItems = this.state.items;
 
@@ -177,15 +176,10 @@ export class MachineList extends Component<Props> {
     const self = this;
 
     axios(config)
-      .then(function (response: { data: any }) {})
+      .then(function (response: { data: any }) { })
       .catch(function (error: any) {
         console.log(error);
       })
-      .done(function () {
-        updateMachineStateInterval = setInterval(() => {
-          self.updateMachineValue();
-        }, 1000);
-      });
   }
 
   filterValueByFarm(itemValue: string) {
@@ -204,6 +198,11 @@ export class MachineList extends Component<Props> {
     }
 
     this.setState({ items: newData });
+  }
+
+  componentWillUnmount() {
+    clearInterval(updateMachineStateInterval)
+    console.log('unmounting...');
   }
 
   componentDidMount() {
@@ -310,15 +309,15 @@ export class MachineList extends Component<Props> {
             <View style={styles.imgContainer}>
               <TouchableOpacity
                 disabled={true}
-                // onPress={() =>
-                //     this.props.navigation.navigate(
-                //         item.forwardScreen || "ComicDetailScreen",
-                //         {
-                //             mangaProviderId: item.mangaProviderId,
-                //             mangaTitle: item.title,
-                //         }
-                //     )
-                // }
+              // onPress={() =>
+              //     this.props.navigation.navigate(
+              //         item.forwardScreen || "ComicDetailScreen",
+              //         {
+              //             mangaProviderId: item.mangaProviderId,
+              //             mangaTitle: item.title,
+              //         }
+              //     )
+              // }
               >
                 {this.renderItem(item)}
               </TouchableOpacity>
