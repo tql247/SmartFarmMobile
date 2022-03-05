@@ -4,32 +4,29 @@
  * https://reactnavigation.org/docs/configuring-links
  */
 
-import * as Linking from 'expo-linking';
-import { useLinkTo } from '@react-navigation/native';
+import * as Linking from "expo-linking";
 
 export default {
-  prefixes: [Linking.makeUrl('/')],
+  prefixes: [Linking.makeUrl("/")],
   config: {
     screens: {
       Root: {
         screens: {
           Main: {
             screens: {
-              MainScreen: 'main',
-              ComicDetailScreen: 'main2',
+              MainScreen: "main",
+              ComicDetailScreen: "main2",
             },
           },
           Search: {
             screens: {
-              SearchScreen: 'two',
+              SearchScreen: "two",
             },
           },
-          Profile: {
-            
-          }
+          Profile: {},
         },
       },
-      NotFound: '*',
+      NotFound: "*",
     },
   },
 };
